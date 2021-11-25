@@ -18,21 +18,35 @@
             </span>
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
-                    Email Address
+                    {{
+                        activeTab === 'first' ?
+                            'E-mail адресс'
+                        :
+                            'Пароль'
+                    }}
                 </label>
                 <span class="material-icons emailAddressLabelItem emailAddressLabelItemIcon">
                     info
                 </span>
             </div>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input v-if="activeTab === 'first'" v-model="email" placeholder="Email address" type="text" class="form-control w-75 authContainerFormItem" />
+            <input v-else-if="activeTab === 'second'" v-model="password" placeholder="Пароль" type="password" class="form-control w-75 authContainerFormItem" />
             <div class="authContainerFormItem">
-                <button class="btn btn-secondary authContainerFormSubitem">
-                    Next
+                <span v-if="activeTab === 'second'" @click="activeTab = 'first'" class="link">
+                    back
+                </span>
+                <button class="btn btn-secondary authContainerFormSubitem" @click="login">
+                    {{
+                        activeTab === 'first' ?
+                            'Далее'
+                        :
+                            'Войти'
+                    }}
                 </button>
                 <span class="authContainerFormSubitem">
                     Don't have an account? 
                 </span>
-                <span class="link authContainerFormSubitem">
+                <span @click="$router.push({ name: 'Register' })" class="link authContainerFormSubitem">
                     Sign Up
                 </span>
             </div>
@@ -58,7 +72,55 @@
 
 <script>
 export default {
+    name: 'Auth',
+    data() {
+        return {
+            activeTab: 'first',
+            email: '',
+            password: ''
+        }
+    },
+    methods: {
+        login() {
+            if (this.activeTab === 'first') {
+                this.activeTab = 'second'
+            } else if (this.activeTab === 'second') {
+                
+                console.log('пытаюсь войти')
+                fetch(`http://localhost:4000/api/cachers/check/?cacheremail=${this.email}&cacherpassword=${this.password}`, {
+                    mode: 'cors',
+                    method: 'GET'
+                }).then(response => response.body).then(rb  => {
+                    const reader = rb.getReader()
+                    return new ReadableStream({
+                        start(controller) {
+                            function push() {
+                                reader.read().then( ({done, value}) => {
+                                    if (done) {
+                                        controller.close();
+                                        return;
+                                    }
+                                    controller.enqueue(value)
+                                    push()
+                                })
+                            }
+                            push()
+                        }
+                    })
+                }).then(stream => {
+                    return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+                })
+                .then(result => {
+                    if (JSON.parse(result).status === 'OK') {
+                        alert('Пользователь вошел')
+                        // this.$router.push({ name: 'Home' })
+                        this.$router.push({ name: 'Clusters' })
+                    }
+                })
 
+            }
+        }
+    }
 }
 </script>
 
@@ -153,6 +215,9 @@ export default {
         margin: 10px 0px;
     }
 
-    
+    .link {
+        cursor: pointer;
+        color: rgb( 0, 200, 255);
+    }
 
 </style>

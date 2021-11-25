@@ -52,11 +52,55 @@
                 </span>
                 <div class="createProjectRow">
                     <span class="createProjectRowHeader">
-                        Database Deployments
+                        Cluster0
                     </span>
-                    <button class="btn btn-success">
-                        Создать
-                    </button>
+                    <div class="clusterInfo">
+                        <div class="clusterInfoColumn">
+                            <span>
+                                VERSION
+                            </span>
+                            <span>
+                                4.4.10
+                            </span>
+                        </div>
+                        <div class="clusterInfoColumn">
+                            <span>
+                                REGION
+                            </span>
+                            <span>
+                                AWS Frankfurt (eu-central-1)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="clusterTabs">
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Overview' }" @click="activeClusterTab = 'Overview'">
+                        &nbsp;&nbsp;Overview&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Real Time' }" @click="activeClusterTab = 'Real Time'">
+                        &nbsp;&nbsp;Real Time&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Metrics' }" @click="activeClusterTab = 'Metrics'">
+                        &nbsp;&nbsp;Metrics&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Collections' }" @click="activeClusterTab = 'Collections'">
+                        &nbsp;&nbsp;Collections&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Search' }" @click="activeClusterTab = 'Search'">
+                        &nbsp;&nbsp;Search&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Profiler' }" @click="activeClusterTab = 'Profiler'">
+                        &nbsp;&nbsp;Profiler&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Performance Advisor' }" @click="activeClusterTab = 'Performance Advisor'">
+                        &nbsp;&nbsp;Performance Advisor&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Online Archive' }" @click="activeClusterTab = 'Online Archive'">
+                        &nbsp;&nbsp;Online Archive&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Command Line Tools' }" @click="activeClusterTab = 'Command Line Tools'">
+                        &nbsp;&nbsp;Command Line Tools&nbsp;&nbsp;
+                    </span>
                 </div>
                 <div class="input-group w-25">
                     <input type="text" placeholder="Найти развертывание базы данных..." class="form-control w-25" />
@@ -64,7 +108,7 @@
                         search
                     </span>
                 </div>
-                <div class="clusterInfo">
+                <div class="clsterInfo">
                     <div class="clusterInfoHeader">
                         <div class="clusterInfoHeaderItem">
                             <span class="material-icons clusterInfoHeaderItemElement">
@@ -79,7 +123,7 @@
                             <button class="btn btn-primary clusterInfoHeaderItemElement">
                                 View Monitoring
                             </button>
-                            <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster' })">
+                            <button class="btn btn-primary clusterInfoHeaderItemElement">
                                 Browse Collections
                             </button>
                             <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
@@ -184,6 +228,11 @@ import Header from '@/components/Header.vue'
 
 export default {
     name: 'Projects',
+    data() {
+        return {
+            activeClusterTab: 'Overview'
+        }
+    },
     components: {
         Header
     }
@@ -238,7 +287,7 @@ export default {
     .createProjectRow {
         display: flex;
         justify-content: space-between;
-        box-shadow: 0px 4px 2px rgb(235, 235, 235);
+        /* box-shadow: 0px 4px 2px rgb(235, 235, 235); */
         padding: 10px;
         margin: 15px 0px;
     }
@@ -304,12 +353,13 @@ export default {
 
     .clusterInfo {
         display: flex;
+        /* display: flex;
         flex-direction: column;
         box-sizing: border-box;
         padding: 15px;
         margin: 30px 0px;
         border-radius: 8px;
-        box-shadow: 0px 0px 5px rgb(200, 200, 200);
+        box-shadow: 0px 0px 5px rgb(200, 200, 200); */
     }
 
     .clusterInfoHeader {
@@ -355,6 +405,32 @@ export default {
 
     .clusterInfoBodyItemContent {
         color: rgb(165, 165, 165);
+    }
+
+    .clusterInfoColumn {
+        display: flex;
+        flex-direction: column;
+        margin: 0px 5px;
+    }
+
+    .clusterTabs {
+        box-shadow: 0px 4px 2px rgb(235, 235, 235);
+        display: flex;
+        margin: 15px 0px;
+    }
+
+    .clusterTab {
+        box-sizing: border-box;
+        padding: 0px 5px;
+        margin: 0px 5px;
+        cursor: pointer;
+    }
+
+    .activeClusterTab {
+        text-decoration: underline;
+        text-underline-offset: 5px;
+        text-decoration-color: rgb(0, 150, 0);
+        text-decoration-thickness: 3px;
     }
 
 </style>

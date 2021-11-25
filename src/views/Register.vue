@@ -27,63 +27,63 @@
             <span>
                 We recommend using your work email
             </span>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Email address" v-model="email" type="text" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     First name
                 </label>
             </div>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Имя" v-model="firstName" type="text" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     Last name
                 </label>
             </div>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Фамилия" v-model="lastName" type="text" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     Password
                 </label>
             </div>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Пароль" v-model="password" type="phone" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     Phone Number
                 </label>
             </div>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Номер телефона" v-model="phoneNumber" type="text" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     Company Name
                 </label>
             </div>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Название компании" v-model="companyName" type="text" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     Job Function
                 </label>
             </div>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Ваша должность" v-model="jobFunction" type="text" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     Country
                 </label>
             </div>
-            <input type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Страна" v-model="country" type="text" class="form-control w-75 authContainerFormItem" />
             <div class="acception">
-                <input class="acceptionItem" type="checkbox" />
+                <input v-model="isAccept" class="acceptionItem" type="checkbox" />
                 <span class="acceptionItem">
                     I accept the Privacy Policy and the Terms of Service
                 </span>
             </div>
             <div class="authContainerFormItem">
-                <button class="btn btn-secondary authContainerFormSubitem">
+                <button :disabled="!isAccept" class="btn btn-secondary authContainerFormSubitem" @click="signUp">
                     Sign up
                 </button>
                 <span class="authContainerFormSubitem">
                     Have an account?
                 </span>
-                <span class="link authContainerFormSubitem">
+                <span @click="$router.push({ name: 'Auth' })" class="link authContainerFormSubitem">
                     Log in now
                 </span>
             </div>
@@ -97,12 +97,52 @@ export default {
     data() {
         return {
             email: '',
-            email: '',
-            email: '',
-            email: '',
-            email: '',
+            firstName: '',
+            lastName: '',
+            password: '',
+            phoneNumber: '',
+            companyName: '',
+            jobFunction: '',
+            country: '',
+            isAccept: false
         }
+    },
+    methods: {
+        signUp() {
+            console.log('регистрирую')
+            fetch(`http://localhost:4000/api/cachers/create/?cacheremail=${this.email}&cacherfirstname=${this.firstName}&cacherlastname=${this.lastName}&cacherpassword=${this.password}&cacherphonenumber=${this.phoneNumber}&cachercompanyname=${this.companyName}&cacherjobfunction=${this.jobFunction}&cachercountry=${this.country}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Создал пользователя')
+                }
+            })
+
+        }
+
     }
+    
 }
 </script>
 
@@ -111,7 +151,7 @@ export default {
     .authContainer {
         display: flex;
         width: 100%;
-        height: 1200px;
+        height: 1220px;
         position: static;
         top: 0px;
         left: 0px;
@@ -122,7 +162,7 @@ export default {
         padding: 55px;
         display: flex;
         flex-direction: column;
-        height: 1200px;
+        height: 1220px;
     }
     
     .authContainerForm {
