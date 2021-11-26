@@ -594,6 +594,141 @@
                             Connect Instructions
                         </button>
                     </div>
+                    <div class="cmdItem">
+                        <span class="cmdHeader cmdSubitem">
+                            Manage Your Cluster From the Command Line Interface
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            Provision and manage clusters with the MongoDB CLI for easier scripting and testing. To get started, create a programmatic <span class="link">API Key</span>  for your project (Project ID: 601286ece82e5f44a9d63601).
+                        </span>
+                        <button class="btn btn-light cmdBtn cmdSubitem">
+                            Install MongoDB CLI
+                        </button>
+                    </div>
+                    <div class="cmdItem">
+                        <span class="cmdHeader cmdSubitem">
+                            Binary Import and Export Tools
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            Replace <span class="wildcard">PASSWORD</span> with the password for the admin user and <span class="wildcard">DATABASE</span> with the name of the database you wish to import/export to your cluster.
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            <span class="link">mongorestore</span> | creates a new database or adds data to an existing database. By default, mongorestore reads the database dump in the dump/ sub-directory of the current directory; to restore from a different directory, pass in the path to the directory as a final argument.
+                        </span>
+                        <div class="codeExample">
+                            <span class="cmdContent cmdSubitem codeExample" v-text="`mongorestore --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net`">
+                                {{
+                                    
+                                }}
+                            </span>
+                            <span class="material-icons codeExampleCopyBtn">
+                                {{
+                                    'content_copy'
+                                }}
+                            </span>
+                        </div>
+                        <span class="cmdContent cmdSubitem">
+                            <span class="link">mongodump</span> | creates a binary export of the contents of a database
+                        </span>
+                        <div class="codeExa">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongodump --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net/<DATABASE>`">
+                                {{
+                                    
+                                }}
+                            </span>
+                            <span class="material-icons codeExampleCopyBtn">
+                                {{
+                                    'content_copy'
+                                }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="cmdItem">
+                        <span class="cmdHeader cmdSubitem">
+                            Data Import and Export Tools
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            Replace <span class="wildcard">PASSWORD</span> with the password for the admin user, <span class="wildcard">DATABASE</span> with the name of the database you wish to import/export to your cluster, and <span class="wildcard">COLLECTION</span> with the name of the collection you wish to import/export to your cluster. Replace <span class="wildcard">FILETYPE</span> with "json" or "csv" to specify the file type. Where applicable, replace <span class="wildcard">FILENAME</span> with the location and name of the output file (for export) or data source (for import).
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            NOTE: When exporting or importing CSV data, an additional --fields flag is often required. See documentation for the specific tool for additional details.
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            <span class="link">mongoimport</span> | imports content from an Extended JSON, CSV, or TSV export
+                        </span>
+                        <div class="codeExample">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongoimport --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net/<DATABASE> --collection <COLLECTION> --type <FILETYPE> --file <FILENAME>`">
+                                {{
+                                    
+                                }}
+                            </span>
+                            <div class="codeExample">
+                                <span class="material-icons codeExampleCopyBtn">
+                                    {{
+                                        'content_copy'
+                                    }}
+                                </span>
+                                <span class="material-icons codeExampleCopyBtn">
+                                    {{
+                                        'content_copy'
+                                    }}
+                                </span>
+                            </div>
+                        </div>
+                        <span class="cmdContent cmdSubitem">
+                            <span class="link">mongoexport</span> | produces a JSON or CSV export of data stored in a MongoDB instance
+                        </span>
+                        <div class="codeExample">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongoexport --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net/<DATABASE> --collection <COLLECTION> --type <FILETYPE> --out <FILENAME>`">
+                                {{
+                                    
+                                }}
+                            </span>
+                            <span class="material-icons codeExampleCopyBtn">
+                                {{
+                                    'content_copy'
+                                }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="cmdItem">
+                        <span class="cmdHeader cmdSubitem">
+                            Set Up Diagnostics
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            Replace <span class="wildcard">PASSWORD</span> with the password for the admin user.
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            <span class="link">mongostat</span> | provides a quick overview of the status of a currently running mongod or mongos instance
+                        </span>
+                        <div class="codeExample">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongostat --uri mongodb+srv://glebClusterUser:\<PASSWORD\>@cluster0.fvfru.mongodb.net `">
+                                {{
+                                    
+                                }}
+                            </span>
+                            <span class="material-icons codeExampleCopyBtn">
+                                {{
+                                    'content_copy'
+                                }}
+                            </span>
+                        </div>
+                        
+                        <span class="cmdContent cmdSubitem">
+                            <span class="link">mongotop</span> | tracks the amount of time a MongoDB instance spends reading and writing data
+                        </span>
+                        <div class="codeExample">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongotop --uri mongodb+srv://glebClusterUser:\<PASSWORD\>@cluster0.fvfru.mongodb.net`">
+                                {{}}
+                            </span>
+                            <span class="material-icons codeExampleCopyBtn">
+                                {{
+                                    'content_copy'
+                                }}
+                            </span>
+                        </div>
+                    </div>
+                    
                 </div>
                 <div class="clsterInfo">
                     <div class="clusterInfoHeader">
@@ -916,10 +1051,12 @@ export default {
     }
 
     .clusterTab:hover {
+        font-size: 14px;
         font-weight: bolder;
     }
 
     .activeClusterTab {
+        
         font-weight: bolder;
         text-decoration: underline;
         text-underline-offset: 5px;
@@ -1076,7 +1213,7 @@ export default {
     .cmdBtn {
         color: rgb(0, 150, 0);
         border: 1px solid rgb(0, 150, 0);
-        width: 125px;
+        width: 200px;
     }
 
     .cmdItem {
@@ -1092,6 +1229,30 @@ export default {
 
     .cmdSubitem {
         margin: 10px 0px;
+    }
+
+    .wildcard {
+        font-weight: bolder;
+        color: rgb(0, 150, 0);
+    }
+
+    .codeExample {
+        border-radius: 15px;
+        margin: 5px;
+        background-color: rgb(235, 235, 235);    
+        box-sizing: border-box;
+        padding: 10px;
+    }
+
+    .codeExampleCopyBtn {
+        /* font-size: 8px; */
+        float: right;
+        width: 35px;
+        height: 15px;
+    }
+    .codeString {
+        padding: 15px;
+        width: 500px;
     }
 
 </style>
