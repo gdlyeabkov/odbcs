@@ -8,9 +8,12 @@
                         apartment
                     </span>
                     <span class="asideItemHeaderElement">
-                        ORGANIZATION
+                        DEPLOYMENT
                     </span>
                 </div>
+                <span class="asideItem">
+                    Databases
+                </span>
                 <span class="asideItem">
                     Data Lake
                 </span>
@@ -130,31 +133,31 @@
                 </div>
                 <div v-else-if="activeClusterTab === 'Real Time'" class="realTime">
                     <div class="realTimeItem">
-                        <span class="material-icons">
+                        <span class="material-icons realTimeItemIcon">
                             timer
                         </span>
-                        <span>
+                        <span class="realTimeItemHeader">
                             Gain insight into your database
                         </span>
-                        <span>
+                        <span class="realTimeItemContent">
                             Observe real-time metrics, identify slow queries, and view hot collections on dedicated clusters.
                         </span>
-                        <span>
+                        <span class="realTimeItemAvailable">
                             Currently available for M10 or higher clusters
                         </span>
                     </div>
                     <div class="realTimeItem">
-                        <span>
+                        <span class="realTimeItemHeader">
                             Upgrade your cluster to unlock Real-Time Metrics and
                         </span>
-                        <span>
-                            Dedicated RAM, storage, vCPU
+                        <span class="realTimeItemContent">
+                            - Dedicated RAM, storage, vCPU
                         </span>
-                        <span>
-                            Auto-scaling storage and tier
+                        <span class="realTimeItemContent">
+                            - Auto-scaling storage and tier
                         </span>
-                        <span>
-                            Cloud backups
+                        <span class="realTimeItemContent realTimeItemBenefit">
+                            - Cloud backups
                         </span>
                         <button class="btn btn-success">
                             Upgrade your Cluster
@@ -435,18 +438,20 @@
                     </div>
                 </div>
                 <div v-else-if="activeClusterTab === 'Search'">
-                    <span>
-                        Make your data more discoverable with Atlas Search
-                    </span>
-                    <span>
-                        Create search indexes and use MongoDB aggregation pipeline to get relevant results.
-                    </span>
+                    <div class="searchBlockHeaders">
+                        <span class="searchBlockHeadersMain">
+                            Make your data more discoverable with Atlas Search
+                        </span>
+                        <span>
+                            Create search indexes and use MongoDB aggregation pipeline to get relevant results.
+                        </span>
+                    </div>
                     <div class="searchBlock">
                         <div class="searchBlockItem">
-                            <span class="material-icons searchBlockItemElement">
+                            <span class="searchBlockItemElementIcon material-icons searchBlockItemElement">
                                 search
                             </span>
-                            <span class="searchBlockItemElement">
+                            <span class="searchBlockItemElementHeader searchBlockItemElement">
                                 Autocomplete
                             </span>
                             <span class="searchBlockItemElement">
@@ -454,10 +459,10 @@
                             </span>
                         </div>
                         <div class="searchBlockItem">
-                            <span class="material-icons searchBlockItemElement">
-                                search
+                            <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                                emoji_symbols
                             </span>
-                            <span class="searchBlockItemElement">
+                            <span class="searchBlockItemElementHeader searchBlockItemElement">
                                 Rich Query DSL
                             </span>
                             <span class="searchBlockItemElement">
@@ -466,15 +471,15 @@
                             <button class="btn btn-success searchBlockItemElement">
                                 Create Search Index
                             </button>
-                            <span class="searchBlockItemElement">
+                            <span class="link searchBlockItemElement">
                                 Learn more in Docs and Tutorials 
                             </span>
                         </div>
                         <div class="searchBlockItem">
-                            <span class="material-icons searchBlockItemElement">
-                                search
+                            <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                                title
                             </span>
-                            <span class="searchBlockItemElement">
+                            <span class="searchBlockItemElementHeader searchBlockItemElement">
                                 Custom Scoring
                             </span>
                             <span class="searchBlockItemElement">
@@ -485,31 +490,31 @@
                 </div>
                 <div v-else-if="activeClusterTab === 'Profiler'" class="realTime" >
                     <div class="realTimeItem">
-                        <span class="material-icons">
-                            timer
+                        <span class="material-icons realTimeItemIcon">
+                            search
                         </span>
-                        <span>
+                        <span class="realTimeItemHeader">
                             Gain insight into your database
                         </span>
-                        <span>
+                        <span class="realTimeItemContent">
                             Observe real-time metrics, identify slow queries, and view hot collections on dedicated clusters.
                         </span>
-                        <span>
+                        <span class="realTimeItemAvailable">
                             Currently available for M10 or higher clusters
                         </span>
                     </div>
                     <div class="realTimeItem">
-                        <span>
+                        <span class="realTimeItemHeader">
                             Upgrade your cluster to unlock Real-Time Metrics and
                         </span>
-                        <span>
-                            Dedicated RAM, storage, vCPU
+                        <span class="realTimeItemContent">
+                            - Dedicated RAM, storage, vCPU
                         </span>
-                        <span>
-                            Auto-scaling storage and tier
+                        <span class="realTimeItemContent">
+                            - Auto-scaling storage and tier
                         </span>
-                        <span>
-                            Cloud backups
+                        <span class="realTimeItemContent realTimeItemBenefit">
+                            - Cloud backups
                         </span>
                         <button class="btn btn-success">
                             Upgrade your Cluster
@@ -518,31 +523,31 @@
                 </div>
                 <div v-else-if="activeClusterTab === 'Performance Advisor'" class="realTime" >
                     <div class="realTimeItem">
-                        <span class="material-icons">
-                            timer
+                        <span class="material-icons realTimeItemIcon">
+                            tungsten
                         </span>
-                        <span>
-                            Gain insight into your database
+                        <span class="realTimeItemHeader">
+                            Automated Index and Schema Recommendations
                         </span>
-                        <span>
-                            Observe real-time metrics, identify slow queries, and view hot collections on dedicated clusters.
+                        <span class="realTimeItemContent">
+                            Review performance optimization suggestions based on automated analysis of your collection metadata and slow query logs.
                         </span>
-                        <span>
+                        <span class="realTimeItemAvailable">
                             Currently available for M10 or higher clusters
                         </span>
                     </div>
                     <div class="realTimeItem">
-                        <span>
+                        <span class="realTimeItemHeader">
                             Upgrade your cluster to unlock Real-Time Metrics and
                         </span>
-                        <span>
-                            Dedicated RAM, storage, vCPU
+                        <span class="realTimeItemContent">
+                            - Dedicated RAM, storage, vCPU
                         </span>
-                        <span>
-                            Auto-scaling storage and tier
+                        <span class="realTimeItemContent">
+                            - Auto-scaling storage and tier
                         </span>
-                        <span>
-                            Cloud backups
+                        <span class="realTimeItemContent realTimeItemBenefit">
+                            - Cloud backups
                         </span>
                         <button class="btn btn-success">
                             Upgrade your Cluster
@@ -551,31 +556,34 @@
                 </div>
                 <div v-else-if="activeClusterTab === 'Online Archive'" class="realTime" >
                     <div class="realTimeItem">
-                        <span class="material-icons">
-                            timer
+                        <span class="material-icons realTimeItemIcon">
+                            build
                         </span>
-                        <span>
-                            Gain insight into your database
+                        <span class="realTimeItemHeader">
+                            Automatically Archive Your Data
                         </span>
-                        <span>
-                            Observe real-time metrics, identify slow queries, and view hot collections on dedicated clusters.
+                        <span class="realTimeItemContent">
+                            Create rules to automatically move infrequently-accessed, immutable data to queryable, read-only storage and free up space in your clusters.                            
                         </span>
-                        <span>
+                        <span class="realTimeItemAvailable">
                             Currently available for M10 or higher clusters
+                        </span>
+                        <span class="link">
+                            Learn more about Online Archive
                         </span>
                     </div>
                     <div class="realTimeItem">
-                        <span>
+                        <span class="realTimeItemHeader">
                             Upgrade your cluster to unlock Real-Time Metrics and
                         </span>
-                        <span>
-                            Dedicated RAM, storage, vCPU
+                        <span class="realTimeItemContent realTimeItemBenefit">
+                            - Dedicated RAM, storage, vCPU
                         </span>
-                        <span>
-                            Auto-scaling storage and tier
+                        <span class="realTimeItemContent realTimeItemBenefit">
+                            - Auto-scaling storage and tier
                         </span>
-                        <span>
-                            Cloud backups
+                        <span class="realTimeItemContent realTimeItemBenefit">
+                            - Cloud backups
                         </span>
                         <button class="btn btn-success">
                             Upgrade your Cluster
@@ -616,7 +624,7 @@
                             <span class="link">mongorestore</span> | creates a new database or adds data to an existing database. By default, mongorestore reads the database dump in the dump/ sub-directory of the current directory; to restore from a different directory, pass in the path to the directory as a final argument.
                         </span>
                         <div class="codeExample">
-                            <span class="cmdContent cmdSubitem codeExample" v-text="`mongorestore --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net`">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongorestore --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net`">
                                 {{
                                     
                                 }}
@@ -630,7 +638,7 @@
                         <span class="cmdContent cmdSubitem">
                             <span class="link">mongodump</span> | creates a binary export of the contents of a database
                         </span>
-                        <div class="codeExa">
+                        <div class="codeExample">
                             <span class="cmdContent cmdSubitem codeString" v-text="`mongodump --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net/<DATABASE>`">
                                 {{
                                     
@@ -662,18 +670,11 @@
                                     
                                 }}
                             </span>
-                            <div class="codeExample">
-                                <span class="material-icons codeExampleCopyBtn">
-                                    {{
-                                        'content_copy'
-                                    }}
-                                </span>
-                                <span class="material-icons codeExampleCopyBtn">
-                                    {{
-                                        'content_copy'
-                                    }}
-                                </span>
-                            </div>
+                            <span class="material-icons codeExampleCopyBtn">
+                                {{
+                                    'content_copy'
+                                }}
+                            </span>
                         </div>
                         <span class="cmdContent cmdSubitem">
                             <span class="link">mongoexport</span> | produces a JSON or CSV export of data stored in a MongoDB instance
@@ -833,7 +834,7 @@
                 </div>
                 <div class="projectsFooter">
                     <span>
-                        System StatusAll GoodLast Login212.7.233.236
+                        System Status <span class="systemStatus">All Good</span>
                     </span>
                     <span>
                         ©2021 MongoDB, Inc.StatusTermsPrivacyAtlas BlogContact Sales
@@ -964,11 +965,16 @@ export default {
         cursor: pointer;
     }
 
+    .link:hover {
+        text-decoration: underline;
+        text-underline-offset: 5px;
+    }
+
     .projectsFooter {
         border-top: 1px solid rgb(215, 215, 215);
         box-sizing: border-box;
         padding: 10px;
-        font-size: 12px;
+        /* font-size: 12px; */
         color: rgb(165, 165, 165);
         display: flex;
         flex-direction: column;
@@ -1073,19 +1079,21 @@ export default {
     .realTime {
         border-radius: 8px;
         border: 1px solid rgb(200, 200, 200);
-        width: 65%;
-        height: 300px;
+        width: 75%;
+        height: 350px;
         margin: 50px auto;
         background-color: rgb(255, 255, 255);
         display: flex;
         box-sizing: border-box;
         padding: 25px;
+        /* align-items: center; */
     }
 
     .realTimeItem {
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: space-between;
     }
 
     .metricsHeader {
@@ -1253,6 +1261,55 @@ export default {
     .codeString {
         padding: 15px;
         width: 500px;
+    }
+
+    .realTimeItemHeader {
+        font-size: 24px;
+    }
+
+    .realTimeItemAvailable {
+        font-weight: bolder;
+        font-size: 18px;
+    }
+
+    .realTimeItemContent {
+        font-weight: 500;
+    }
+
+    .realTimeItemIcon {
+        font-size: 48px;
+    }
+
+    .realTimeItemBenefit {
+        align-self: flex-start;
+    }
+
+    .searchBlockItemElementIcon {
+        font-size: 48px;
+    }
+
+    .searchBlockItemElementHeader {
+        font-weight: bolder;
+        font-size: 18px;
+    }
+
+    .searchBlockHeaders {
+        display: flex;
+        flex-direction: column;
+        font-weight: 500;
+        font-size: 18px;
+        align-items: center;
+        margin: 35px 0px;
+    }
+
+    .searchBlockHeadersMain {
+        font-weight: bolder;
+        font-size: 20px;
+        margin: 15px 0px;
+    }
+
+    .systemStatus {
+        color: rgb(0, 150, 0);
     }
 
 </style>

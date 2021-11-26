@@ -1,52 +1,118 @@
 <template>
     <div class="header">
-        <div class="headerItem">
-            <img src="https://assets-global.website-files.com/6064b31ff49a2d31e0493af1/610d75bbd917363ac7a1fec0_mongoDB.svg" alt="mongo db" width="75px" />
-            <button class="btn btn-light organizationSelector">
-                <span class="material-icons">
-                    apartment
+        <div class="headerRow">
+            <div class="headerItem">
+                <img src="https://assets-global.website-files.com/6064b31ff49a2d31e0493af1/610d75bbd917363ac7a1fec0_mongoDB.svg" alt="mongo db" width="75px" />
+                <button class="btn btn-light organizationSelector">
+                    <span class="material-icons">
+                        apartment
+                    </span>
+                    <span>
+                        Gleb's Org
+                    </span>
+                </button>
+                <span class="settingsShortcut material-icons btn btn-light">
+                    settings
                 </span>
-                <span>
-                    Gleb's Org
-                </span>
-            </button>
-            <span class="settingsShortcut material-icons btn btn-light">
-                settings
-            </span>
-            <div class="headerSubitem accessManager">
-                <span>
-                    Диспетчер доступа
-                </span>
-                <span class="material-icons">
-                    arrow_drop_down
+                <div class="headerSubitem accessManager">
+                    <span>
+                        Диспетчер доступа
+                    </span>
+                    <span class="material-icons">
+                        arrow_drop_down
+                    </span>
+                </div>
+                <span class="billing">
+                    Счета
                 </span>
             </div>
-            <span class="billing">
-                Счета
-            </span>
+            <div class="headerItem">
+                <span class="allClusters headerItemElement">
+                    Все класеры
+                </span>
+                <span class="getHelpBtn headerItemElement">
+                    Получить помощь    
+                </span>
+                <button class="personalArea btn btn-light">
+                    <span>
+                        Gleb
+                    </span>
+                    <span class="material-icons">
+                        arrow_drop_down
+                    </span>
+                </button>
+            </div>
         </div>
-        <div class="headerItem">
-            <span class="allClusters headerItemElement">
-                Все класеры
-            </span>
-            <span class="getHelpBtn headerItemElement">
-                Получить помощь    
-            </span>
-            <button class="personalArea btn btn-light">
-                <span>
-                    Gleb
-                </span>
+        <div class="headerRow">
+            <div class="headerTabs">
+                <div class="input-group">
+                    <span class="material-icons input-group-text">
+                        folder
+                    </span>
+                    <span class="btn btn-secondary">
+                        vue_videos
+                    </span>
+                    <span class="material-icons input-group-text">
+                        arrow_drop_down
+                    </span>
+                </div>
                 <span class="material-icons">
-                    arrow_drop_down
+                    more_vert
                 </span>
-            </button>
+                <div :class="{activeHeaderTab: activeHeaderTab === 'Atlas', headerTab: true}" @click="activeHeaderTab = 'Atlas'">
+                    <span :class="{'material-icons': true,  headerTabIcon: true, activeHeaderTab: activeHeaderTab === 'Atlas'}">
+                        analytics
+                    </span>
+                    <span>
+                        Atlas
+                    </span>
+                </div>
+                <div :class="{activeHeaderTab: activeHeaderTab === 'Realm', headerTab: true}" @click="activeHeaderTab = 'Realm'">
+                    <span :class="{'material-icons': true,  headerTabIcon: true, activeHeaderTab: activeHeaderTab === 'Realm'}">
+                        analytics
+                    </span>
+                    <span>
+                        Realm
+                    </span>
+                </div>
+                <div :class="{activeHeaderTab: activeHeaderTab === 'Charts', headerTab: true}" @click="activeHeaderTab = 'Charts'">
+                    <span :class="{'material-icons': true,  headerTabIcon: true, activeHeaderTab: activeHeaderTab === 'Charts'}">
+                        analytics
+                    </span>
+                    <span>
+                        Charts
+                    </span>
+                </div>
+            </div>
+            <div class="headerTabs">
+                <div class="headerTab">
+                    <span class="material-icons headerTabIcon">
+                        person_add
+                    </span>
+                </div>
+                <div class="headerTab">
+                    <span class="material-icons headerTabIcon">
+                        file_copy
+                    </span>
+                </div>
+                <div class="headerTab">
+                    <span class="material-icons headerTabIcon">
+                        notifications
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-
+    name: 'Header',
+    data() {
+        return {
+            activeHeaderTab: 'Atlas'
+        }
+    }
 }
 </script>
 
@@ -54,12 +120,15 @@ export default {
     
     .header {
         margin-bottom: 5px;
-        height: 50px;
+        min-height: 50px;
         box-shadow: 0px 0px 25px rgb(200, 200, 200);
         display: flex;
         justify-content: space-between;
         box-sizing: border-box;
         padding: 0px 25px;
+        display: flex;
+        flex-direction: column;
+        
     }
 
     .headerItem {
@@ -148,6 +217,33 @@ export default {
     .allClusters:hover {
         box-shadow: 0px 4px 2px rgb(235, 235, 235);
         color: rgb(0, 150, 150);
+    }
+
+    .headerRow {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .headerTabs {
+        display: flex;
+    }
+
+    .headerTab {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        margin: 0px 10px;
+    }
+
+    .headerTabIcon {
+        color: rgb(200, 200, 200);
+    }
+
+    .activeHeaderTab {
+        font-weight: bolder;
+        color: rgb(0, 150, 0);
+        box-shadow: 0px 4px 2px rgb(235, 235, 235);
     }
 
 </style>
