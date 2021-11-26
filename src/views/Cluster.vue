@@ -74,39 +74,526 @@
                     </div>
                 </div>
                 <div class="clusterTabs">
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Overview' }" @click="activeClusterTab = 'Overview'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Overview' }" @click="activeClusterTab = 'Overview'">
                         &nbsp;&nbsp;Overview&nbsp;&nbsp;
                     </span>
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Real Time' }" @click="activeClusterTab = 'Real Time'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Real Time' }" @click="activeClusterTab = 'Real Time'">
                         &nbsp;&nbsp;Real Time&nbsp;&nbsp;
                     </span>
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Metrics' }" @click="activeClusterTab = 'Metrics'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Metrics' }" @click="activeClusterTab = 'Metrics'">
                         &nbsp;&nbsp;Metrics&nbsp;&nbsp;
                     </span>
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Collections' }" @click="activeClusterTab = 'Collections'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Collections' }" @click="activeClusterTab = 'Collections'">
                         &nbsp;&nbsp;Collections&nbsp;&nbsp;
                     </span>
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Search' }" @click="activeClusterTab = 'Search'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Search' }" @click="activeClusterTab = 'Search'">
                         &nbsp;&nbsp;Search&nbsp;&nbsp;
                     </span>
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Profiler' }" @click="activeClusterTab = 'Profiler'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Profiler' }" @click="activeClusterTab = 'Profiler'">
                         &nbsp;&nbsp;Profiler&nbsp;&nbsp;
                     </span>
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Performance Advisor' }" @click="activeClusterTab = 'Performance Advisor'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Performance Advisor' }" @click="activeClusterTab = 'Performance Advisor'">
                         &nbsp;&nbsp;Performance Advisor&nbsp;&nbsp;
                     </span>
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Online Archive' }" @click="activeClusterTab = 'Online Archive'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Online Archive' }" @click="activeClusterTab = 'Online Archive'">
                         &nbsp;&nbsp;Online Archive&nbsp;&nbsp;
                     </span>
-                    <span :class="{ clusterTab, activeClusterTab: activeClusterTab === 'Command Line Tools' }" @click="activeClusterTab = 'Command Line Tools'">
+                    <span :class="{ clusterTab: true, activeClusterTab: activeClusterTab === 'Command Line Tools' }" @click="activeClusterTab = 'Command Line Tools'">
                         &nbsp;&nbsp;Command Line Tools&nbsp;&nbsp;
                     </span>
                 </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти развертывание базы данных..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
+                <div v-if="activeClusterTab === 'Overview'">
+                    <div class="overviewHeader">
+                        <div class="s">
+                            <span>
+                                SANDBOX
+                            </span>
+                            <span>
+                                NODES
+                            </span>
+                            <span>
+                                REPLICA SET
+                            </span>
+                        </div>
+                        <div class="">
+                            <button class="btn btn-light">
+                                CONNECT
+                            </button>
+                            <button class="btn btn-light">
+                                CONFIGURATION
+                            </button>
+                            <span class="btn btn-light material-icons">
+                                more_horiz
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="activeClusterTab === 'Real Time'" class="realTime">
+                    <div class="realTimeItem">
+                        <span class="material-icons">
+                            timer
+                        </span>
+                        <span>
+                            Gain insight into your database
+                        </span>
+                        <span>
+                            Observe real-time metrics, identify slow queries, and view hot collections on dedicated clusters.
+                        </span>
+                        <span>
+                            Currently available for M10 or higher clusters
+                        </span>
+                    </div>
+                    <div class="realTimeItem">
+                        <span>
+                            Upgrade your cluster to unlock Real-Time Metrics and
+                        </span>
+                        <span>
+                            Dedicated RAM, storage, vCPU
+                        </span>
+                        <span>
+                            Auto-scaling storage and tier
+                        </span>
+                        <span>
+                            Cloud backups
+                        </span>
+                        <button class="btn btn-success">
+                            Upgrade your Cluster
+                        </button>
+                    </div>
+                </div>
+                <div v-else-if="activeClusterTab === 'Metrics'">
+                    <div class="metricsHeader">
+                        <span class="metricsHeaderItem">
+                            GRANULARITY 
+                        </span>
+                        <span class="metricsHeaderItem">
+                            Auto
+                        </span>
+                        <span class="metricsHeaderItem">
+                            ZOOM 
+                        </span>
+                        <span class="metricsHeaderItem">
+                            1 hour
+                        </span>
+                        <span class="metricsHeaderItem">
+                            CURRENT DISPLAY 
+                        </span>
+                        <span class="metricsHeaderItem">
+                            11/26/2021
+                        </span>
+                        <span class="metricsHeaderItem">
+                            06:39am
+                        </span>
+                        <span class="metricsHeaderItem">
+                            to 
+                        </span>
+                        <span class="metricsHeaderItem">
+                            11/26/2021
+                        </span>
+                        <span class="metricsHeaderItem">
+                            07:39am
+                        </span>
+                        <span class="metricsHeaderItem">
+                            AT 1 MINUTE GRANULARITY
+                        </span>
+                    </div>
+                    <div class="metricsHeader">
+                        <span class="metricsHeaderItem">
+                            TOGGLE MEMBERS
+                        </span>
+                        <input type="checkbox" class="metricsHeaderItem" />
+                        <span class="metricsHeaderItem">
+                            $
+                        </span>
+                        <input type="checkbox" class="metricsHeaderItem" />
+                        <span class="metricsHeaderItem">
+                            P
+                        </span>
+                        <input type="checkbox" class="metricsHeaderItem" />
+                        <span class="metricsHeaderItem">
+                            $
+                        </span>
+                        <span class="metricsHeaderItem btn btn-light">
+                            ADD CHART
+                        </span>
+                        <input type="checkbox" class="metricsHeaderItem" />
+                        <span class="metricsHeaderItem">
+                            DISPLAY OPCOUNTERS ON SEPARATE CHARTS
+                        </span>
+                        <input type="checkbox" class="metricsHeaderItem" />
+                        <span class="metricsHeaderItem">
+                            DISPLAY TIMELINE ANNOTATIONS
+                        </span>
+                    </div>
+                </div>
+                <div v-else-if="activeClusterTab === 'Collections'">
+                    <div class="collectionsHeader">
+                        <div class="collectionsHeaderContainer">
+                            <span class="collectionsHeaderItem">
+                                DATABASES:
+                            </span>
+                            <span class="collectionsHeaderItem">
+                                23
+                            </span>
+                            <span class="collectionsHeaderItem">
+                                COLLECTIONS:
+                            </span>
+                            <span class="collectionsHeaderItem">
+                                50
+                            </span>
+                        </div>
+                        <div class="collectionsHeaderContainer">
+                            <span class="collectionsHeaderItem">
+                                Default landing
+                            </span>
+                            <span class="collectionsHeaderItem">
+                                VISUALIZE YOUR DATA
+                            </span>
+                            <span class="collectionsHeaderItem">
+                                REFRESH
+                            </span>
+                        </div>
+                    </div>
+                    <div class="coolectionsBody">
+                        <div class="coolectionsBodyAside">
+                            <button class="btn btn-light">
+                                + Create Database
+                            </button>
+                            <input type="text" placeholder="Пространства имен" class="form-control" />
+                            <div class="databases">
+                                <div class="database">
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            arrow_right
+                                        </span>
+                                        <span :class="{databaseItem: true, activeDatabaseItem: activeDatabase === 'database_name' }">
+                                            database_name
+                                        </span>
+                                    </div>
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            add
+                                        </span>
+                                        <span class="material-icons databaseItem">
+                                            delete
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="database">
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            arrow_right
+                                        </span>
+                                        <span class="databaseItem">
+                                            database_name
+                                        </span>
+                                    </div>
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            add
+                                        </span>
+                                        <span class="material-icons databaseItem">
+                                            delete
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="database">
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            arrow_right
+                                        </span>
+                                        <span class="databaseItem">
+                                            database_name
+                                        </span>
+                                    </div>
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            add
+                                        </span>
+                                        <span class="material-icons databaseItem">
+                                            delete
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="database">
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            arrow_right
+                                        </span>
+                                        <span class="databaseItem">
+                                            database_name
+                                        </span>
+                                    </div>
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            add
+                                        </span>
+                                        <span class="material-icons databaseItem">
+                                            delete
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="database">
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            arrow_right
+                                        </span>
+                                        <span class="databaseItem">
+                                            database_name
+                                        </span>
+                                    </div>
+                                    <div class="databaseBlock">
+                                        <span class="material-icons databaseItem">
+                                            add
+                                        </span>
+                                        <span class="material-icons databaseItem">
+                                            delete
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="coolectionsBodyArticle">
+                            <span class="coolectionsBodyArticleHeader">
+                                abtestreal
+                            </span>
+                            <div class="coolectionsBodyArticleInfo">
+                                <div>
+                                    <span>
+                                        DATABASE SIZE: 666B
+                                    </span>
+                                    <span>
+                                        INDEX SIZE: 36KB
+                                    </span>
+                                    <span>
+                                        TOTAL COLLECTIONS: 1
+                                    </span>
+                                </div>
+                                <button class="btn btn-success">
+                                    CREATE COLLECTION
+                                </button>
+                            </div>
+                            <div class="coolectionsBodyArticleTable">
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Collection Name&nbsp;&nbsp;
+                                    </span>
+                                    <span class="link coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;myusers&nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Documents&nbsp;&nbsp;
+                                    </span>
+                                    <span class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;6&nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Documents Size&nbsp;&nbsp;
+                                    </span>
+                                    <span class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;666B&nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Documents Avg&nbsp;&nbsp;
+                                    </span>
+                                    <span class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;111B&nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Indexes&nbsp;&nbsp;
+                                    </span>
+                                    <span class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;1&nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Index Size&nbsp;&nbsp;
+                                    </span>
+                                    <span class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;36KB&nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Index Avg&nbsp;&nbsp;
+                                    </span>
+                                    <span class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;36KB&nbsp;&nbsp;
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="activeClusterTab === 'Search'">
+                    <span>
+                        Make your data more discoverable with Atlas Search
                     </span>
+                    <span>
+                        Create search indexes and use MongoDB aggregation pipeline to get relevant results.
+                    </span>
+                    <div class="searchBlock">
+                        <div class="searchBlockItem">
+                            <span class="material-icons searchBlockItemElement">
+                                search
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Autocomplete
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Suggest common search results as users type
+                            </span>
+                        </div>
+                        <div class="searchBlockItem">
+                            <span class="material-icons searchBlockItemElement">
+                                search
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Rich Query DSL
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Search across different data types and languages
+                            </span>
+                            <button class="btn btn-success searchBlockItemElement">
+                                Create Search Index
+                            </button>
+                            <span class="searchBlockItemElement">
+                                Learn more in Docs and Tutorials 
+                            </span>
+                        </div>
+                        <div class="searchBlockItem">
+                            <span class="material-icons searchBlockItemElement">
+                                search
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Custom Scoring
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Fine-tune relevance and boost promoted content
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="activeClusterTab === 'Profiler'" class="realTime" >
+                    <div class="realTimeItem">
+                        <span class="material-icons">
+                            timer
+                        </span>
+                        <span>
+                            Gain insight into your database
+                        </span>
+                        <span>
+                            Observe real-time metrics, identify slow queries, and view hot collections on dedicated clusters.
+                        </span>
+                        <span>
+                            Currently available for M10 or higher clusters
+                        </span>
+                    </div>
+                    <div class="realTimeItem">
+                        <span>
+                            Upgrade your cluster to unlock Real-Time Metrics and
+                        </span>
+                        <span>
+                            Dedicated RAM, storage, vCPU
+                        </span>
+                        <span>
+                            Auto-scaling storage and tier
+                        </span>
+                        <span>
+                            Cloud backups
+                        </span>
+                        <button class="btn btn-success">
+                            Upgrade your Cluster
+                        </button>
+                    </div>
+                </div>
+                <div v-else-if="activeClusterTab === 'Performance Advisor'" class="realTime" >
+                    <div class="realTimeItem">
+                        <span class="material-icons">
+                            timer
+                        </span>
+                        <span>
+                            Gain insight into your database
+                        </span>
+                        <span>
+                            Observe real-time metrics, identify slow queries, and view hot collections on dedicated clusters.
+                        </span>
+                        <span>
+                            Currently available for M10 or higher clusters
+                        </span>
+                    </div>
+                    <div class="realTimeItem">
+                        <span>
+                            Upgrade your cluster to unlock Real-Time Metrics and
+                        </span>
+                        <span>
+                            Dedicated RAM, storage, vCPU
+                        </span>
+                        <span>
+                            Auto-scaling storage and tier
+                        </span>
+                        <span>
+                            Cloud backups
+                        </span>
+                        <button class="btn btn-success">
+                            Upgrade your Cluster
+                        </button>
+                    </div>
+                </div>
+                <div v-else-if="activeClusterTab === 'Online Archive'" class="realTime" >
+                    <div class="realTimeItem">
+                        <span class="material-icons">
+                            timer
+                        </span>
+                        <span>
+                            Gain insight into your database
+                        </span>
+                        <span>
+                            Observe real-time metrics, identify slow queries, and view hot collections on dedicated clusters.
+                        </span>
+                        <span>
+                            Currently available for M10 or higher clusters
+                        </span>
+                    </div>
+                    <div class="realTimeItem">
+                        <span>
+                            Upgrade your cluster to unlock Real-Time Metrics and
+                        </span>
+                        <span>
+                            Dedicated RAM, storage, vCPU
+                        </span>
+                        <span>
+                            Auto-scaling storage and tier
+                        </span>
+                        <span>
+                            Cloud backups
+                        </span>
+                        <button class="btn btn-success">
+                            Upgrade your Cluster
+                        </button>
+                    </div>
+                </div>
+                <div v-else-if="activeClusterTab === 'Command Line Tools'">
+                    <div class="cmdItem">
+                        <span class="cmdHeader cmdSubitem">
+                            Connect To Your Cluster
+                        </span>
+                        <span class="cmdContent cmdSubitem">
+                            Methods to connect your application to your cluster via MongoShell, URI, or Compass can be found in the connect modal.
+                        </span>
+                        <button class="btn btn-light cmdBtn cmdSubitem">
+                            Connect Instructions
+                        </button>
+                    </div>
                 </div>
                 <div class="clsterInfo">
                     <div class="clusterInfoHeader">
@@ -230,7 +717,9 @@ export default {
     name: 'Projects',
     data() {
         return {
-            activeClusterTab: 'Overview'
+            activeClusterTab: 'Overview',
+            activeDatabase: 'database_name',
+            activeCollection: 'collection_name',
         }
     },
     components: {
@@ -426,11 +915,183 @@ export default {
         cursor: pointer;
     }
 
+    .clusterTab:hover {
+        font-weight: bolder;
+    }
+
     .activeClusterTab {
+        font-weight: bolder;
         text-decoration: underline;
         text-underline-offset: 5px;
         text-decoration-color: rgb(0, 150, 0);
         text-decoration-thickness: 3px;
+    }
+
+    .overviewHeader {
+        display: flex;
+        justify-content: space-between;
+        box-shadow: 0px 4px 2px rgb(235, 235, 235);
+    }
+
+    .realTime {
+        border-radius: 8px;
+        border: 1px solid rgb(200, 200, 200);
+        width: 65%;
+        height: 300px;
+        margin: 50px auto;
+        background-color: rgb(255, 255, 255);
+        display: flex;
+        box-sizing: border-box;
+        padding: 25px;
+    }
+
+    .realTimeItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .metricsHeader {
+        display: flex;
+        justify-content: center;
+        margin: 15px 0px;
+    }
+
+    .metricsHeaderItem {
+        margin: 0px 10px;
+        font-size: 12px;
+    }
+
+    .collectionsHeader {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid rgb(200, 200, 200);
+    }
+
+    .collectionsHeaderItem {
+        margin: 0px 10px;
+    }
+
+    .collectionsHeaderContainer {
+        display: flex;
+    }
+
+    .coolectionsBody {
+        display: flex;
+        height: 500px;
+    }
+
+    .coolectionsBodyAside {
+        width: 25%;
+        border-right: 1px solid rgb(200, 200, 200);
+    }
+
+    .coolectionsBodyArticle {
+        width: 75%;
+    }
+
+    .databases {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .database {
+        margin: 15px 0px;
+        justify-content: space-between;
+        display: flex;
+        align-items: center;
+    }
+
+    .databaseItem {
+        cursor: pointer;
+    }
+
+    .databaseBlock {
+        display: flex;
+        align-items: center;
+    }
+
+    .activeDatabaseItem {
+        font-weight: bolder;
+        color: rgb(0, 150, 0);
+    }
+
+    .coolectionsBodyArticleHeader {
+        font-weight: bolder;
+        font-size: 28px;
+        color: rgb(65, 65, 65);
+    }
+
+    .coolectionsBodyArticleInfo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .coolectionsBodyArticleTable {
+        display: flex;
+    }
+
+    .coolectionsBodyArticleTableColumn {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .coolectionsBodyArticleTableColumnHeader {
+        font-weight: bolder;
+        font-size: 14px;
+        color: rgb(65, 65, 65);
+    }
+    
+    .coolectionsBodyArticleTableColumnItem {
+        margin: 15px 0px;
+        box-shadow: 0px 4px 2px rgb(235, 235, 235);
+    }
+
+    .searchBlock {
+        display: flex;
+        justify-content: center;
+    }
+
+    .searchBlockItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0px 25px;
+    }
+
+    .searchBlockItemElement {
+        margin: 5px 0px;
+        text-align: center;
+    }
+
+    .cmdHeader {
+        font-size: 24px;
+    }
+
+    .cmdContent {
+        
+    }
+
+    .cmdBtn {
+        color: rgb(0, 150, 0);
+        border: 1px solid rgb(0, 150, 0);
+        width: 125px;
+    }
+
+    .cmdItem {
+        display: flex;
+        flex-direction: column;
+        width: 500px;
+    }
+
+    .cmd {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cmdSubitem {
+        margin: 10px 0px;
     }
 
 </style>
