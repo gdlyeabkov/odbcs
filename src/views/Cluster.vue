@@ -55,7 +55,9 @@
                 </span>
                 <div class="createProjectRow">
                     <span class="createProjectRowHeader">
-                        Cluster0
+                        {{
+                            cluster.name
+                        }}
                     </span>
                     <div class="clusterInfo">
                         <div class="clusterInfoColumn">
@@ -259,12 +261,12 @@
                     </div>
                     <div class="coolectionsBody">
                         <div class="coolectionsBodyAside">
-                            <button class="btn btn-light">
-                                + Create Database
+                            <button class="btn btn-light" @click="isCreateDatabaseDialog = true">
+                                + Создать базу данных
                             </button>
                             <input type="text" placeholder="Пространства имен" class="form-control" />
                             <div class="databases">
-                                <div class="database">
+                                <!-- <div class="database">
                                     <div class="databaseBlock">
                                         <span class="material-icons databaseItem">
                                             arrow_right
@@ -353,26 +355,69 @@
                                             delete
                                         </span>
                                     </div>
+                                </div> -->
+                                <div v-for="database in databases" :key="database.name" class="database" @click="switchDatabase($event, database)">
+                                    <div class="databaseMain">
+                                        <div class="databaseBlock">
+                                            <span class="material-icons databaseItem" @click="toggleDatabase(database)">
+                                                {{
+                                                    !database.isOpen ?
+                                                        'arrow_right'
+                                                    :
+                                                        'arrow_drop_down'
+                                                }}
+                                            </span>
+                                            <span :class="{databaseItem: true, activeDatabaseItem: activeDatabase.name === database.name }" @mouseenter="database.isHover = true" @mouseleave="database.isHover = false">
+                                                {{
+                                                    database.name
+                                                }}
+                                            </span>
+                                        </div>
+                                        <div class="databaseBlock" v-if="database.isHover">
+                                            <span class="material-icons databaseItem" @click="activeDatabase = database.name; isCreateCollectionDialog = true">
+                                                add
+                                            </span>
+                                            <span class="material-icons databaseItem">
+                                                delete
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div v-for="collection in collections.filter(collection => database.collections.map(collection => collection.id).includes(collection._id) && database.isOpen)" :key="collection._id" class="databaseMain collectionPreview" @mouseover="collection.isHover = true" @mouseout="collection.isHover = false">
+                                        <div id="collectionTargetId" class="databaseBlock" @click="activeCollection = collection">
+                                            <span id="collectionTargetId" :class="{databaseItem: true, activeDatabaseItem: activeCollection.name === collection.name }">
+                                                {{
+                                                    collection.name
+                                                }}
+                                            </span>
+                                        </div>
+                                        <div class="databaseBlock">
+                                            <span class="material-icons databaseItem">
+                                                delete
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="coolectionsBodyArticle">
+                        <div v-if="activeDatabase.name.length >= 1 && activeCollection.name.length <= 0" class="coolectionsBodyArticle">
                             <span class="coolectionsBodyArticleHeader">
-                                abtestreal
+                                {{
+                                    activeDatabase.name
+                                }}
                             </span>
                             <div class="coolectionsBodyArticleInfo">
                                 <div>
                                     <span>
-                                        DATABASE SIZE: 666B
+                                        DATABASE SIZE: {{ 666 * activeDatabase.collections.length }}B
                                     </span>
                                     <span>
-                                        INDEX SIZE: 36KB
+                                        INDEX SIZE: {{ 36 * activeDatabase.collections.length }}KB
                                     </span>
                                     <span>
-                                        TOTAL COLLECTIONS: 1
+                                        TOTAL COLLECTIONS: {{ activeDatabase.collections.length }}
                                     </span>
                                 </div>
-                                <button class="btn btn-success">
+                                <button class="btn btn-success" @click="isCreateCollectionDialog = true">
                                     CREATE COLLECTION
                                 </button>
                             </div>
@@ -381,56 +426,199 @@
                                     <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;Collection Name&nbsp;&nbsp;
                                     </span>
-                                    <span class="link coolectionsBodyArticleTableColumnItem">
+                                    <!-- <span class="link coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;myusers&nbsp;&nbsp;
+                                    </span> -->
+                                    <span v-for="collection in collections" :key="collection.name" class="link coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                        {{
+                                            collection.name
+                                        }}
+                                        &nbsp;&nbsp;
                                     </span>
                                 </div>
                                 <div class="coolectionsBodyArticleTableColumn">
                                     <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;Documents&nbsp;&nbsp;
                                     </span>
-                                    <span class="coolectionsBodyArticleTableColumnItem">
-                                        &nbsp;&nbsp;6&nbsp;&nbsp;
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '6'
+                                            }}
+                                        &nbsp;&nbsp;
                                     </span>
                                 </div>
                                 <div class="coolectionsBodyArticleTableColumn">
                                     <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;Documents Size&nbsp;&nbsp;
                                     </span>
-                                    <span class="coolectionsBodyArticleTableColumnItem">
-                                        &nbsp;&nbsp;666B&nbsp;&nbsp;
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '666B'
+                                            }}
+                                        &nbsp;&nbsp;
                                     </span>
                                 </div>
                                 <div class="coolectionsBodyArticleTableColumn">
                                     <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;Documents Avg&nbsp;&nbsp;
                                     </span>
-                                    <span class="coolectionsBodyArticleTableColumnItem">
-                                        &nbsp;&nbsp;111B&nbsp;&nbsp;
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '111B'
+                                            }}
+                                        &nbsp;&nbsp;
                                     </span>
                                 </div>
                                 <div class="coolectionsBodyArticleTableColumn">
                                     <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;Indexes&nbsp;&nbsp;
                                     </span>
-                                    <span class="coolectionsBodyArticleTableColumnItem">
-                                        &nbsp;&nbsp;1&nbsp;&nbsp;
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '1'
+                                            }}
+                                        &nbsp;&nbsp;
                                     </span>
                                 </div>
                                 <div class="coolectionsBodyArticleTableColumn">
                                     <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;Index Size&nbsp;&nbsp;
                                     </span>
-                                    <span class="coolectionsBodyArticleTableColumnItem">
-                                        &nbsp;&nbsp;36KB&nbsp;&nbsp;
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '36KB'
+                                            }}
+                                        &nbsp;&nbsp;
                                     </span>
                                 </div>
                                 <div class="coolectionsBodyArticleTableColumn">
                                     <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;Index Avg&nbsp;&nbsp;
                                     </span>
-                                    <span class="coolectionsBodyArticleTableColumnItem">
-                                        &nbsp;&nbsp;36KB&nbsp;&nbsp;
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '36KB'
+                                            }}
+                                        &nbsp;&nbsp;
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else-if="activeDatabase.name.length >= 1 && activeCollection.name.length >= 1" class="coolectionsBodyArticle">
+                            <span class="coolectionsBodyArticleHeader">
+                                {{
+                                    activeDatabase.name
+                                }}
+                            </span>
+                            <div class="coolectionsBodyArticleInfo">
+                                <div>
+                                    <span>
+                                        DATABASE SIZE: {{ 666 * activeDatabase.collections.length }}B
+                                    </span>
+                                    <span>
+                                        INDEX SIZE: {{ 36 * activeDatabase.collections.length }}KB
+                                    </span>
+                                    <span>
+                                        TOTAL COLLECTIONS: {{ activeDatabase.collections.length }}
+                                    </span>
+                                </div>
+                                <button class="btn btn-success" @click="isCreateCollectionDialog = true">
+                                    CREATE COLLECTION
+                                </button>
+                            </div>
+                            <div class="coolectionsBodyArticleTable">
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Collection Name&nbsp;&nbsp;
+                                    </span>
+                                    <!-- <span class="link coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;myusers&nbsp;&nbsp;
+                                    </span> -->
+                                    <span v-for="collection in collections" :key="collection.name" class="link coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                        {{
+                                            collection.name
+                                        }}
+                                        &nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Documents&nbsp;&nbsp;
+                                    </span>
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '6'
+                                            }}
+                                        &nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Documents Size&nbsp;&nbsp;
+                                    </span>
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '666B'
+                                            }}
+                                        &nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Documents Avg&nbsp;&nbsp;
+                                    </span>
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '111B'
+                                            }}
+                                        &nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Indexes&nbsp;&nbsp;
+                                    </span>
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '1'
+                                            }}
+                                        &nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Index Size&nbsp;&nbsp;
+                                    </span>
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '36KB'
+                                            }}
+                                        &nbsp;&nbsp;
+                                    </span>
+                                </div>
+                                <div class="coolectionsBodyArticleTableColumn">
+                                    <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;Index Avg&nbsp;&nbsp;
+                                    </span>
+                                    <span v-for="collection in collections" :key="collection.name" class="coolectionsBodyArticleTableColumnItem">
+                                        &nbsp;&nbsp;
+                                            {{
+                                                '36KB'
+                                            }}
+                                        &nbsp;&nbsp;
                                     </span>
                                 </div>
                             </div>
@@ -624,7 +812,7 @@
                             <span class="link">mongorestore</span> | creates a new database or adds data to an existing database. By default, mongorestore reads the database dump in the dump/ sub-directory of the current directory; to restore from a different directory, pass in the path to the directory as a final argument.
                         </span>
                         <div class="codeExample">
-                            <span class="cmdContent cmdSubitem codeString" v-text="`mongorestore --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net`">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongorestore --uri mongodb+srv://glebClusterUser:<PASSWORD>@${cluster.name}.fvfru.mongodb.net`">
                                 {{
                                     
                                 }}
@@ -639,7 +827,7 @@
                             <span class="link">mongodump</span> | creates a binary export of the contents of a database
                         </span>
                         <div class="codeExample">
-                            <span class="cmdContent cmdSubitem codeString" v-text="`mongodump --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net/<DATABASE>`">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongodump --uri mongodb+srv://glebClusterUser:<PASSWORD>@${cluster.name}.fvfru.mongodb.net/<DATABASE>`">
                                 {{
                                     
                                 }}
@@ -665,7 +853,7 @@
                             <span class="link">mongoimport</span> | imports content from an Extended JSON, CSV, or TSV export
                         </span>
                         <div class="codeExample">
-                            <span class="cmdContent cmdSubitem codeString" v-text="`mongoimport --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net/<DATABASE> --collection <COLLECTION> --type <FILETYPE> --file <FILENAME>`">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongoimport --uri mongodb+srv://glebClusterUser:<PASSWORD>@${cluster.name}.fvfru.mongodb.net/<DATABASE> --collection <COLLECTION> --type <FILETYPE> --file <FILENAME>`">
                                 {{
                                     
                                 }}
@@ -680,7 +868,7 @@
                             <span class="link">mongoexport</span> | produces a JSON or CSV export of data stored in a MongoDB instance
                         </span>
                         <div class="codeExample">
-                            <span class="cmdContent cmdSubitem codeString" v-text="`mongoexport --uri mongodb+srv://glebClusterUser:<PASSWORD>@cluster0.fvfru.mongodb.net/<DATABASE> --collection <COLLECTION> --type <FILETYPE> --out <FILENAME>`">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongoexport --uri mongodb+srv://glebClusterUser:<PASSWORD>@${cluster.name}.fvfru.mongodb.net/<DATABASE> --collection <COLLECTION> --type <FILETYPE> --out <FILENAME>`">
                                 {{
                                     
                                 }}
@@ -703,7 +891,7 @@
                             <span class="link">mongostat</span> | provides a quick overview of the status of a currently running mongod or mongos instance
                         </span>
                         <div class="codeExample">
-                            <span class="cmdContent cmdSubitem codeString" v-text="`mongostat --uri mongodb+srv://glebClusterUser:\<PASSWORD\>@cluster0.fvfru.mongodb.net `">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongostat --uri mongodb+srv://glebClusterUser:\<PASSWORD\>@${cluster.name}.fvfru.mongodb.net `">
                                 {{
                                     
                                 }}
@@ -719,7 +907,7 @@
                             <span class="link">mongotop</span> | tracks the amount of time a MongoDB instance spends reading and writing data
                         </span>
                         <div class="codeExample">
-                            <span class="cmdContent cmdSubitem codeString" v-text="`mongotop --uri mongodb+srv://glebClusterUser:\<PASSWORD\>@cluster0.fvfru.mongodb.net`">
+                            <span class="cmdContent cmdSubitem codeString" v-text="`mongotop --uri mongodb+srv://glebClusterUser:\<PASSWORD\>@${cluster.name}.fvfru.mongodb.net`">
                                 {{}}
                             </span>
                             <span class="material-icons codeExampleCopyBtn">
@@ -730,107 +918,6 @@
                         </div>
                     </div>
                     
-                </div>
-                <div class="clsterInfo">
-                    <div class="clusterInfoHeader">
-                        <div class="clusterInfoHeaderItem">
-                            <span class="material-icons clusterInfoHeaderItemElement">
-                                pending
-                            </span>
-                            <span class="clusterInfoHeaderItemElement">
-                                Cluster0
-                            </span>
-                            <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                Connect
-                            </button>
-                            <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                View Monitoring
-                            </button>
-                            <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                Browse Collections
-                            </button>
-                            <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
-                                more_horiz
-                            </button>
-                        </div>
-                        <div class="clusterInfoHeaderItem">
-                            <span class="clusterInfoHeaderItemElement">
-                                Free
-                            </span>
-                            <span class="clusterInfoHeaderItemElement">
-                                Shared
-                            </span>
-                        </div>
-                    </div>
-                    <div class="clusterInfoBody">
-                        <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                            Your cluster has been automatically paused due to prolonged inactivity.
-                        </span>
-                        <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                            Resume your cluster to connect to it and to gain access to your data.
-                        </span>
-                        <button class="btn btn-success clusterInfoBodyItem">
-                            Resume
-                        </button>
-                    </div>
-                    <div class="clusterInfoFooter">
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                VERSION
-                            </span>
-                            <span>
-                                4.4.10
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                REGION
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                AWS / Frankfurt (eu-central-1)
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                CLUSTER TIER
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                M0 Sandbox (General)
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                TYPE
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                Replica Set - 3 nodes
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                BACKUPS
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                Inactive
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                LINKED REALM APP
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                None Linked
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                ATLAS SEARCH
-                            </span>
-                            <span>
-                                Create Index
-                            </span>
-                        </div>
-                    </div>
                 </div>
                 <div class="projectsFooter">
                     <span>
@@ -843,19 +930,354 @@
             </div>
         </div>
         <Footer />
+        <div v-if="isCreateDatabaseDialog" class="createCollectionDialogBackdrop">
+            <div class="createCollectionDialog">
+                <div class="closeRow">
+                    <span class="material-icons closeBtn" @click="isCreateDatabaseDialog = false">
+                        close
+                    </span>
+                </div>
+                <span class="createCollectionDialogItem createCollectionDialogHeader">
+                    Создать базу данных
+                </span>
+                <label for="" class="createCollectionDialogItem createCollectionDialogLabel">
+                    Имя базы данных
+                </label>
+                <input  v-model="databaseName" placeholder="Введите имя базы данных" type="text" class="form-control w-75 createCollectionDialogItem" />
+                <label for="" class="createCollectionDialogItem createCollectionDialogLabel">
+                    Имя коллекции
+                </label>
+                <input v-model="collectionName" placeholder="Введите имя коллекции" type="text" class="form-control w-75 createCollectionDialogItem" />
+                <label for="" class="createCollectionDialogItem createCollectionDialogLabel">
+                    Дополнительные настройки
+                </label>
+                <div class="createCollectionDialogContainer createCollectionDialogItem">
+                    <input v-model="isCappedCollection" type="checkbox" class="createCollectionDialogContainerItem" />
+                    <span class="createCollectionDialogContainerItem">
+                        закрытая коллекция
+                    </span>
+                    <span class="material-icons createCollectionDialogContainerItem">
+                        info
+                    </span>
+                </div>
+                <hr />
+                <div class="createCollectionDialogItem createCollectionDialogItemBtns">
+                    <button class="btn btn-light createCollectionDialogItemBtn" @click="isCreateDatabaseDialog = false">
+                        Отмена
+                    </button>
+                    <button class="btn btn-light createCollectionDialogItemBtn" @click="createDatabase">
+                        Создать
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="isCreateCollectionDialog" class="createCollectionDialogBackdrop">
+            <div class="createCollectionDialog">
+                <div class="closeRow">
+                    <span class="material-icons closeBtn" @click="isCreateCollectionDialog = false">
+                        close
+                    </span>
+                </div>
+                <span class="createCollectionDialogItem createCollectionDialogHeader">
+                    Создать коллекцию
+                </span>
+                <label for="" class="createCollectionDialogItem createCollectionDialogLabel">
+                    Имя базы данных
+                </label>
+                <input disabled="true" :value="activeDatabase.name" type="text" class="form-control w-75 createCollectionDialogItem" />
+                <label for="" class="createCollectionDialogItem createCollectionDialogLabel">
+                    Имя коллекции
+                </label>
+                <input v-model="collectionName" placeholder="Введите имя коллекции" type="text" class="form-control w-75 createCollectionDialogItem" />
+                <label for="" class="createCollectionDialogItem createCollectionDialogLabel">
+                    Дополнительные настройки
+                </label>
+                <div class="createCollectionDialogContainer createCollectionDialogItem">
+                    <input v-model="isCappedCollection" type="checkbox" class="createCollectionDialogContainerItem" />
+                    <span class="createCollectionDialogContainerItem">
+                        закрытая коллекция
+                    </span>
+                    <span class="material-icons createCollectionDialogContainerItem">
+                        info
+                    </span>
+                </div>
+                <hr />
+                <div class="createCollectionDialogItem createCollectionDialogItemBtns">
+                    <button class="btn btn-light createCollectionDialogItemBtn" @click="isCreateCollectionDialog = false">
+                        Отмена
+                    </button>
+                    <button class="btn btn-light createCollectionDialogItemBtn" @click="createCollection">
+                        Создать
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+
 import Header from '@/components/Header.vue'
+
+import * as jwt from 'jsonwebtoken'
 
 export default {
     name: 'Projects',
     data() {
         return {
             activeClusterTab: 'Overview',
-            activeDatabase: 'database_name',
-            activeCollection: 'collection_name',
+            activeDatabase: {
+                name: ''
+            },
+            activeCollection: {
+                name: ''
+            },
+            cacher: null,
+            cluster: null,
+            databases: [],
+            collections: [],
+            isCreateDatabaseDialog: false,
+            isCreateCollectionDialog: false,
+            isCappedCollection: false,
+            databaseName: '',
+            collectionName: '',
+            token: window.localStorage.getItem('odbcstoken')
+        }
+    },
+    mounted() {
+        
+        jwt.verify(this.token, 'odbcssecret', (err, decoded) => {
+            if (err) {
+                return this.$router.push({ name: 'Auth' })
+            }
+            fetch(`http://localhost:4000/api/cachers/get/?cacheremail=${decoded.cacher}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Пользователя нашел')
+                    this.cacher = JSON.parse(result).cacher
+                    
+                    fetch(`http://localhost:4000/api/clusters/get/?clusterid=${this.$route.query.clusterid}`, {
+                        mode: 'cors',
+                        method: 'GET'
+                    }).then(response => response.body).then(rb  => {
+                        const reader = rb.getReader()
+                        return new ReadableStream({
+                            start(controller) {
+                                function push() {
+                                    reader.read().then( ({done, value}) => {
+                                        if (done) {
+                                            controller.close();
+                                            return;
+                                        }
+                                        controller.enqueue(value)
+                                        push()
+                                    })
+                                }
+                                push()
+                            }
+                        })
+                    }).then(stream => {
+                        return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+                    })
+                    .then(result => {
+                        if (JSON.parse(result).status === 'OK') {
+                            alert('Кластер нашел')
+                            this.cacher = JSON.parse(result).cacher
+                            this.cluster = JSON.parse(result).cluster
+                            this.getDatabases()
+                        }
+                    })      
+
+                }
+            })
+            
+        })
+
+    },
+    methods: {
+        switchDatabase(event, database) {
+            if (event.target.id !== 'collectionTargetId') {
+                this.activeDatabase = database
+                this.activeCollection.name = ''
+                this.getCollections()
+            }
+        },
+        toggleDatabase(database) {
+            database.isOpen = !database.isOpen
+        },
+        getCollections(database = this.activeDatabase) {
+
+            fetch(`http://localhost:4000/api/collections/all/?databaseid=${database._id}&collectionname=${this.collectionName}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    // alert('получил коллекции')
+                    this.collections = JSON.parse(result).collections
+                    this.collections = this.collections.map(collection => {
+                        collection.isHover = false
+                        return collection
+                    })
+                }
+            })      
+
+        },
+        getDatabases() {
+
+            fetch(`http://localhost:4000/api/databases/all/?clusterid=${this.cluster._id}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('получил Базы данных')
+                    this.databases = JSON.parse(result).databases
+                    this.databases = this.databases.map(database => {
+                        database.isOpen = false
+                        database.isHover = false
+                        return database
+                    })
+
+                    if (this.databases.length >= 1) {
+                        this.activeDatabase = this.databases[0]
+                    }
+
+                }
+            })      
+
+        },
+        createDatabase() {
+
+            fetch(`http://localhost:4000/api/databases/create/?clusterid=${this.cluster._id}&databasename=${this.databaseName}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Базу данных создал')
+                    this.isCreateDatabaseDialog = false
+                    this.databaseName = ''
+                    this.collectionName = ''
+
+                    this.getDatabases()
+
+                }
+            })      
+
+        },
+        createCollection() {
+
+            fetch(`http://localhost:4000/api/collections/create/?databaseid=${this.activeDatabase._id}&collectionname=${this.collectionName}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Коллекцию создал')
+                    this.isCreateCollectionDialog = false
+                    this.collectionName = ''
+                }
+            })      
+
         }
     },
     components: {
@@ -1127,12 +1549,16 @@ export default {
     }
 
     .coolectionsBodyAside {
+        box-sizing: border-box;
+        padding: 15px;
         width: 25%;
         border-right: 1px solid rgb(200, 200, 200);
     }
 
     .coolectionsBodyArticle {
         width: 75%;
+        box-sizing: border-box;
+        padding: 15px;
     }
 
     .databases {
@@ -1141,6 +1567,14 @@ export default {
     }
 
     .database {
+        margin: 15px 0px;
+        /* justify-content: space-between; */
+        display: flex;
+        flex-direction: column;
+        align-items: space-between;
+    }
+
+    .databaseMain {
         margin: 15px 0px;
         justify-content: space-between;
         display: flex;
@@ -1310,6 +1744,74 @@ export default {
 
     .systemStatus {
         color: rgb(0, 150, 0);
+    }
+
+    .createCollectionDialogBackdrop {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .createCollectionDialog {
+        box-sizing: border-box;
+        padding: 0px 25px;
+        width: 65%;
+        height: 65%;
+        background-color: rgb(255, 255, 255);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .closeRow {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .closeBtn {
+        cursor: pointer;
+    }
+
+    .createCollectionDialogHeader {
+        font-size: 24px;
+        font-weight: bolder;
+    }
+
+    .createCollectionDialogItem {
+        margin: 5px 0px;
+    }
+
+    .createCollectionDialogContainer {
+        display: flex;
+        align-items: center;
+    }
+
+    .createCollectionDialogContainerItem {
+        margin: 0px 10px;
+    }
+
+    .createCollectionDialogItemBtns {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .createCollectionDialogItemBtn {
+        margin: 0px 5px;
+        border: 1px solid rgb(200, 200, 200);
+    }
+
+    .createCollectionDialogLabel {
+        font-weight: bolder;
+    }
+
+    .collectionPreview {
+        margin-left: 25px;
     }
 
 </style>

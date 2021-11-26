@@ -54,7 +54,7 @@
                     <span class="createProjectRowHeader">
                         Database Deployments
                     </span>
-                    <button class="btn btn-success">
+                    <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
                         Создать
                     </button>
                 </div>
@@ -64,106 +64,139 @@
                         search
                     </span>
                 </div>
-                <div class="clusterInfo">
-                    <div class="clusterInfoHeader">
-                        <div class="clusterInfoHeaderItem">
-                            <span class="material-icons clusterInfoHeaderItemElement">
-                                pending
+                <div v-if="clusters.length >= 1">
+                    <div v-for="cluster in clusters" :key="cluster.name" class="clusterInfo">
+                        <div class="clusterInfoHeader">
+                            <div class="clusterInfoHeaderItem">
+                                <div class="material-icons clusterInfoHeaderItemElement clusterInfoHeaderItemElementStatus">
+                                    
+                                </div>
+                                <span class="clusterInfoHeaderItemElement">
+                                    {{
+                                        cluster.name
+                                    }}
+                                </span>
+                                <button class="btn btn-primary clusterInfoHeaderItemElement">
+                                    Connect
+                                </button>
+                                <button class="btn btn-primary clusterInfoHeaderItemElement">
+                                    View Monitoring
+                                </button>
+                                <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster', query: { clusterid: cluster._id } })">
+                                    Browse Collections
+                                </button>
+                                <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
+                                    more_horiz
+                                </button>
+                            </div>
+                            <div class="clusterInfoHeaderItem">
+                                <span class="clusterInfoHeaderItemElement">
+                                    {{
+                                        cluster.free ?
+                                            'Бесплатный'
+                                        :
+                                            'Платный'
+                                    }}
+                                </span>
+                                <span class="clusterInfoHeaderItemElement">
+                                    {{
+                                        cluster.shared ?
+                                            'Общий'
+                                        :
+                                            'Частный' 
+                                    }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="clusterInfoBody">
+                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
+                                Your cluster has been automatically paused due to prolonged inactivity.
                             </span>
-                            <span class="clusterInfoHeaderItemElement">
-                                Cluster0
+                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
+                                Resume your cluster to connect to it and to gain access to your data.
                             </span>
-                            <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                Connect
-                            </button>
-                            <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                View Monitoring
-                            </button>
-                            <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster' })">
-                                Browse Collections
-                            </button>
-                            <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
-                                more_horiz
+                            <button class="btn btn-success clusterInfoBodyItem">
+                                Resume
                             </button>
                         </div>
-                        <div class="clusterInfoHeaderItem">
-                            <span class="clusterInfoHeaderItemElement">
-                                Free
-                            </span>
-                            <span class="clusterInfoHeaderItemElement">
-                                Shared
-                            </span>
+                        <div class="clusterInfoFooter">
+                            <div class="clusterInfoFooterItem">
+                                <span class="clusterInfoFooterSubitem">
+                                    VERSION
+                                </span>
+                                <span>
+                                    {{
+                                        cluster.version
+                                    }}
+                                </span>
+                            </div>
+                            <div class="clusterInfoFooterItem">
+                                <span class="clusterInfoFooterSubitem">
+                                    REGION
+                                </span>
+                                <span class="clusterInfoFooterSubitem">
+                                    {{
+                                        cluster.region
+                                    }}
+                                </span>
+                            </div>
+                            <div class="clusterInfoFooterItem">
+                                <span class="clusterInfoFooterSubitem">
+                                    CLUSTER TIER
+                                </span>
+                                <span class="clusterInfoFooterSubitem">
+                                    {{
+                                        cluster.clusterTier
+                                    }}
+                                </span>
+                            </div>
+                            <div class="clusterInfoFooterItem">
+                                <span class="clusterInfoFooterSubitem">
+                                    TYPE
+                                </span>
+                                <span class="clusterInfoFooterSubitem">
+                                    {{
+                                        cluster.type
+                                    }}
+                                </span>
+                            </div>
+                            <div class="clusterInfoFooterItem">
+                                <span class="clusterInfoFooterSubitem">
+                                    BACKUPS
+                                </span>
+                                <span class="clusterInfoFooterSubitem">
+                                    {{
+                                        cluster.backups
+                                    }}
+                                </span>
+                            </div>
+                            <div class="clusterInfoFooterItem">
+                                <span class="clusterInfoFooterSubitem">
+                                    LINKED REALM APP
+                                </span>
+                                <span class="clusterInfoFooterSubitem">
+                                    {{
+                                        cluster.linkedRealmApp
+                                    }}
+                                </span>
+                            </div>
+                            <div class="clusterInfoFooterItem">
+                                <span class="clusterInfoFooterSubitem">
+                                    ATLAS SEARCH
+                                </span>
+                                <span>
+                                    {{
+                                        cluster.atlasSearch
+                                    }}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="clusterInfoBody">
-                        <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                            Your cluster has been automatically paused due to prolonged inactivity.
-                        </span>
-                        <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                            Resume your cluster to connect to it and to gain access to your data.
-                        </span>
-                        <button class="btn btn-success clusterInfoBodyItem">
-                            Resume
-                        </button>
-                    </div>
-                    <div class="clusterInfoFooter">
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                VERSION
-                            </span>
-                            <span>
-                                4.4.10
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                REGION
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                AWS / Frankfurt (eu-central-1)
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                CLUSTER TIER
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                M0 Sandbox (General)
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                TYPE
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                Replica Set - 3 nodes
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                BACKUPS
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                Inactive
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                LINKED REALM APP
-                            </span>
-                            <span class="clusterInfoFooterSubitem">
-                                None Linked
-                            </span>
-                        </div>
-                        <div class="clusterInfoFooterItem">
-                            <span class="clusterInfoFooterSubitem">
-                                ATLAS SEARCH
-                            </span>
-                            <span>
-                                Create Index
-                            </span>
-                        </div>
-                    </div>
+                </div>
+                <div v-else>
+                    <span>
+                        Вы еще ни создали ни 1 кластер
+                    </span>
                 </div>
                 <div class="projectsFooter">
                     <span>
@@ -180,10 +213,93 @@
 </template>
 
 <script>
+
 import Header from '@/components/Header.vue'
+
+import * as jwt from 'jsonwebtoken'
 
 export default {
     name: 'Projects',
+    data() {
+        return {
+            cacher: {
+                clusters: []
+            },
+            clusters: [],
+            token: window.localStorage.getItem('odbcstoken')
+        }
+    },
+    mounted() {
+        
+        jwt.verify(this.token, 'odbcssecret', (err, decoded) => {
+            if (err) {
+                return this.$router.push({ name: 'Auth' })
+            }
+            fetch(`http://localhost:4000/api/cachers/get/?cacheremail=${decoded.cacher}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Пользователя нашел')
+                    this.cacher = JSON.parse(result).cacher
+                    
+                    fetch(`http://localhost:4000/api/clusters/all/?cacheremail=${this.cacher.email}`, {
+                        mode: 'cors',
+                        method: 'GET'
+                    }).then(response => response.body).then(rb  => {
+                        const reader = rb.getReader()
+                        return new ReadableStream({
+                            start(controller) {
+                                function push() {
+                                    reader.read().then( ({done, value}) => {
+                                        if (done) {
+                                            controller.close();
+                                            return;
+                                        }
+                                        controller.enqueue(value)
+                                        push()
+                                    })
+                                }
+                                push()
+                            }
+                        })
+                    }).then(stream => {
+                        return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+                    })
+                    .then(result => {
+                        if (JSON.parse(result).status === 'OK') {
+                            alert('Кластеры нашел')
+                            this.cacher = JSON.parse(result).cacher
+                            this.clusters = JSON.parse(result).clusters
+                        }
+                    })      
+
+                }
+            })
+            
+        })
+
+    },
     components: {
         Header
     }
@@ -355,6 +471,13 @@ export default {
 
     .clusterInfoBodyItemContent {
         color: rgb(165, 165, 165);
+    }
+
+    .clusterInfoHeaderItemElementStatus {
+        border-radius: 100%;
+        width: 15px;
+        height: 15px;
+        background-color: rgb(0, 150, 0);
     }
 
 </style>

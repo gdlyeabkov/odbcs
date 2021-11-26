@@ -71,13 +71,17 @@
 </template>
 
 <script>
+
+import * as jwt from 'jsonwebtoken'
+
 export default {
     name: 'Auth',
     data() {
         return {
             activeTab: 'first',
             email: '',
-            password: ''
+            password: '',
+            token: window.localStorage.getItem('odbcstoken')
         }
     },
     methods: {
@@ -113,8 +117,14 @@ export default {
                 .then(result => {
                     if (JSON.parse(result).status === 'OK') {
                         alert('Пользователь вошел')
-                        // this.$router.push({ name: 'Home' })
-                        this.$router.push({ name: 'Clusters' })
+                        
+                        this.token = jwt.sign({
+                            cacher: this.email
+                        }, 'odbcssecret', { expiresIn: '5m' })
+                        localStorage.setItem('odbcstoken', this.token)
+                        
+                        this.$router.push({ name: 'Home' })
+                        // this.$router.push({ name: 'Clusters' })
                     }
                 })
 

@@ -56,9 +56,52 @@ const CacherSchema = new mongoose.Schema({
         default: Date.now
     },
     clusters: [mongoose.Schema.Types.Map]
-}, { collection : 'mycachers' });
+}, { collection : 'mycachers' })
 
 const CacherModel = mongoose.model('CacherModel', CacherSchema);
+
+const ClusterSchema = new mongoose.Schema({
+    name: String,
+    free: Boolean,
+    shared: Boolean,
+    version: String,
+    region: String,
+    clusterTier: String,
+    type: String,
+    backups: String,
+    linkedRealmApp: String,
+    atlasSearch: String,
+    paused: {
+        type: Boolean,
+        default: false
+    },
+    databases: [mongoose.Schema.Types.Map]
+}, { collection : 'myclusters' })
+
+const ClusterModel = mongoose.model('ClusterModel', ClusterSchema)
+
+const DatabaseSchema = new mongoose.Schema({
+    name: String,
+    cluster: String,
+    collections: [mongoose.Schema.Types.Map]
+}, { collection : 'mydatabases' })
+
+const DatabaseModel = mongoose.model('DatabaseModel', DatabaseSchema)
+
+const CollectionSchema = new mongoose.Schema({
+    name: String,
+    database: String,
+    documents: [mongoose.Schema.Types.Map]
+}, { collection : 'mycollections' })
+
+const CollectionModel = mongoose.model('CollectionModel', CollectionSchema)
+
+const DocumentSchema = new mongoose.Schema({
+    fields: [mongoose.Schema.Types.Map],
+    collectionId: String
+}, { collection : 'mydocuments' })
+
+const DocumentModel = mongoose.model('DocumentModel', DocumentSchema)
 
 app.get('/api/cachers/create', (req, res) => {
         
@@ -101,6 +144,114 @@ app.get('/api/cachers/create', (req, res) => {
 
 })
 
+app.get('/api/databases/create', (req, res) => {
+        
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    let query = DatabaseModel.find({  })
+    query.exec((err, allDatabases) => {
+        if (err) {
+            return res.json({ "status": "Error" })
+        }
+        
+        let databaseExists = false
+
+        allDatabases.forEach(database => {
+            if(database.name.includes(req.query.databasename)){
+                databaseExists = true
+            }
+        })
+        if (databaseExists) {
+            return res.json({ status: 'Error' })
+
+        } else {
+            const database = new DatabaseModel({ name: req.query.databasename, cluster: req.query.clusterid })
+            database.save(function (err) {
+                if (err) {
+                    return res.json({ "status": "Error" })
+                } else {
+                    ClusterModel.updateOne({ _id: req.query.clusterid },
+                        { $push: 
+                            {
+                                databases: [
+                                    {
+                                        id: database._id
+                                    }
+                                ]
+                                
+                            }
+                    }, (err, cacher) => {
+                        if(err){
+                            return res.json({ "status": "error" })
+                        } else {
+                            return res.json({ "status": "OK" })
+                        }
+                    })
+
+                }
+            })
+        }
+    })
+
+})
+
+app.get('/api/collections/create', (req, res) => {
+        
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    let query = CollectionModel.find({  })
+    query.exec((err, allCollections) => {
+        if (err) {
+            return res.json({ "status": "Error" })
+        }
+        
+        let collectionExists = false
+
+        allCollections.forEach(collection => {
+            if(collection.name.includes(req.query.collectionname)){
+                collectionExists = true
+            }
+        })
+        if (collectionExists) {
+            return res.json({ status: 'Error' })
+
+        } else {
+            const collection = new CollectionModel({ name: req.query.collectionname, database: req.query.databaseid })
+            collection.save(function (err, collection) {
+                if (err) {
+                    return res.json({ "status": "Error" })
+                } else {
+                    DatabaseModel.updateOne({ _id: req.query.databaseid },
+                        { $push: 
+                            {
+                                collections: [
+                                    {
+                                        id: collection._id
+                                    }
+                                ]
+                                
+                            }
+                    }, (err, database) => {
+                        if (err) {
+                            return res.json({ "status": "error" })
+                        } else {
+                            return res.json({ "status": "OK" })    
+                        }
+                    })
+
+                }
+            })
+        }
+    })
+
+})
+
 app.get('/api/cachers/check', (req, res) => {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -125,6 +276,163 @@ app.get('/api/cachers/check', (req, res) => {
 
 })
 
+app.get('/api/clusters/create', (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    
+    let query = ClusterModel.find({  })
+    query.exec((err, allClusters) => {
+        if (err) {
+            return res.json({ "status": "Error" })
+        }
+        
+        let clusterExists = false
+
+        allClusters.forEach(cluster => {
+            if(cluster.name.includes(req.query.clustername)){
+                clusterExists = true
+            }
+        })
+        if(clusterExists){
+            return res.json({ status: 'Error' })
+
+        } else {
+            const cluster = new ClusterModel({ name: req.query.clustername, free: req.query.free, shared: req.query.shared, version: req.query.version, region: req.query.region, clusterTier: req.query.clustertier, type: req.query.type, backups: req.query.backups, linkedRealmApp: req.query.linkedrealmapp, atlasSearch: req.query.atlassearch  })
+            cluster.save(function (err, cluster) {
+                if (err) {
+                    return res.json({ "status": "Error" })
+                } else {
+                    CacherModel.updateOne({ email: req.query.cacheremail },
+                        { $push: 
+                            {
+                                clusters: [
+                                    {
+                                        id: cluster._id
+                                    }
+                                ]
+                                
+                            }
+                    }, (err, cacher) => {
+                        if(err){
+                            return res.json({ "status": "error" })
+                        } else {
+                            return res.json({ "status": "OK" })
+                        }
+                    })
+                }
+            })
+        }
+    })
+
+})
+
+app.get('/api/cachers/get', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    let query = CacherModel.findOne({ email: req.query.cacheremail })
+    query.exec((err, cacher) => {
+        if (err) {
+            return res.json({ 'status': 'false' })
+        }
+        return res.json({ 'status': 'OK', 'cacher': cacher })
+    })
+
+})
+
+app.get('/api/clusters/all', (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  
+    let query =  CacherModel.findOne({ 'email': req.query.cacheremail }, function(err, cacher) {
+        if (err || cacher === undefined || cacher === null) {
+            return res.json({ "status": 'Error'})
+        } else {
+            let query = ClusterModel.find({ _id: { $in: cacher.clusters.flatMap(cluster => new Map(cluster).get('id')) } })                    
+            query.exec((error, clusters) => {
+                if (error) {
+                    return res.json({ "status": 'Error'})
+                }
+                return res.json({ clusters: clusters, status: 'OK' })
+            })
+        }
+    })
+
+})
+
+app.get('/api/databases/all', (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  
+    let query =  ClusterModel.findOne({ '_id': req.query.clusterid }, function(err, cluster) {
+        if (err || cluster === undefined || cluster === null) {
+            return res.json({ "status": 'Error'})
+        } else {
+            let query = DatabaseModel.find({ _id: { $in: cluster.databases.flatMap(database => new Map(database).get('id')) } })                    
+            query.exec((error, databases) => {
+                if (error) {
+                    return res.json({ "status": 'Error'})
+                }
+                return res.json({ databases: databases, status: 'OK' })
+            })
+        }
+    })
+
+})
+
+app.get('/api/collections/all', (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  
+    let query =  DatabaseModel.findOne({ '_id': req.query.databaseid }, function(err, database) {
+        if (err || database === undefined || database === null) {
+            return res.json({ "status": 'Error'})
+        } else {
+            // let query = CollectionModel.find({ _id: { $in: database.collections.flatMap(collection => new Map(collection).get('id')) } })
+            let query = CollectionModel.find({  })
+            query.exec((error, collections) => {
+                if (error) {
+                    return res.json({ "status": 'Error'})
+                }
+                return res.json({ collections: collections, status: 'OK' })
+            })
+        }
+    })
+
+})
+
+app.get('/api/clusters/get', (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    let query =  ClusterModel.findOne({'_id': req.query.clusterid}, function(err, cluster) {
+        if (err || cluster == undefined || cluster == null){
+            return res.json({ "status": "Error" })
+        } else {
+          return res.json({ status: 'OK', cluster: cluster })
+        }
+    })
+    
+})
 
 app.get('**', (req, res) => { 
 
@@ -132,7 +440,7 @@ app.get('**', (req, res) => {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-    
+      
     return res.redirect(`http://localhost:4000/?redirectroute=${req.path}`)
 
 })
