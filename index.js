@@ -169,7 +169,7 @@ app.get('/api/databases/create', (req, res) => {
 
         } else {
             const database = new DatabaseModel({ name: req.query.databasename, cluster: req.query.clusterid })
-            database.save(function (err) {
+            database.save(function (err, currentDatabase) {
                 if (err) {
                     return res.json({ "status": "Error" })
                 } else {
@@ -187,7 +187,55 @@ app.get('/api/databases/create', (req, res) => {
                         if(err){
                             return res.json({ "status": "error" })
                         } else {
-                            return res.json({ "status": "OK" })
+
+                            // здесь
+                            let query = CollectionModel.find({  })
+                            query.exec((err, allCollections) => {
+                                if (err) {
+                                    return res.json({ "status": "Error" })
+                                }
+                                
+                                let collectionExists = false
+
+                                allCollections.forEach(collection => {
+                                    if(collection.name.includes(req.query.collectionname)){
+                                        collectionExists = true
+                                    }
+                                })
+                                if (collectionExists) {
+                                    return res.json({ status: 'Error' })
+
+                                } else {
+                                    const collection = new CollectionModel({ name: req.query.collectionname, database: currentDatabase._id })
+                                    collection.save(function (err, collection) {
+                                        if (err) {
+                                            return res.json({ "status": "Error" })
+                                        } else {
+                                            DatabaseModel.updateOne({ _id: currentDatabase._id },
+                                                { $push: 
+                                                    {
+                                                        collections: [
+                                                            {
+                                                                id: collection._id
+                                                            }
+                                                        ]
+                                                        
+                                                    }
+                                            }, (err, database) => {
+                                                if (err) {
+                                                    return res.json({ "status": "error" })
+                                                } else {
+                                                    return res.json({ "status": "OK" })    
+                                                }
+                                            })
+
+                                        }
+                                    })
+                                }
+                            })
+
+                            // return res.json({ "status": "OK" })
+                            
                         }
                     })
 
@@ -248,6 +296,65 @@ app.get('/api/collections/create', (req, res) => {
                 }
             })
         }
+    })
+
+})
+
+app.get('/api/documents/create', (req, res) => {
+        
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    let query = DocumentModel.find({  })
+    query.exec((err, allDocuments) => {
+        if (err) {
+            return res.json({ "status": "Error" })
+        }
+        const document = new DocumentModel({ collectionId: req.query.collectionid })
+        document.save(function (err, document) {
+            if (err) {
+                return res.json({ "status": "Error" })
+            } else {
+                DocumentModel.updateOne({ _id: document._id },
+                    { $push: 
+                        {
+                            fields: [
+                                {
+                                    type: JSON.parse(req.query.document),
+                                    value: JSON.parse(req.query.document)
+                                }
+                            ]
+                            
+                        }
+                }, (err, otherDocument) => {
+                    if (err) {
+                        return res.json({ "status": "error" })
+                    } else {
+                        CollectionModel.updateOne({ _id: req.query.collectionid },
+                            { $push: 
+                                {
+                                    documents: [
+                                        {
+                                            id: document._id
+                                        }
+                                    ]
+                                    
+                                }
+                        }, (err, collection) => {
+                            if (err) {
+                                return res.json({ "status": "error" })
+                            } else {
+                                return res.json({ "status": "OK" })    
+                            }
+                        })
+                    }
+                })
+
+            }
+        })
+        
     })
 
 })
@@ -417,6 +524,30 @@ app.get('/api/collections/all', (req, res) => {
 
 })
 
+app.get('/api/documents/all', (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  
+    let query =  CollectionModel.findOne({ '_id': req.query.collectionid }, function(err, collection) {
+        if (err || collection === undefined || collection === null) {
+            return res.json({ "status": 'Error'})
+        } else {
+            // let query = CollectionModel.find({ _id: { $in: database.collections.flatMap(collection => new Map(collection).get('id')) } })
+            let query = DocumentModel.find({  })
+            query.exec((error, documents) => {
+                if (error) {
+                    return res.json({ "status": 'Error'})
+                }
+                return res.json({ documents: documents, status: 'OK' })
+            })
+        }
+    })
+
+})
+
 app.get('/api/clusters/get', (req, res) => {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -433,6 +564,39 @@ app.get('/api/clusters/get', (req, res) => {
     })
     
 })
+
+app.get('/api/databases/delete', async (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+      
+    mongoose.connection.collection("myclusters").updateOne(
+        { _id: req.query.clusterid },
+        { $pull: { 'databases': { _id: req.query.databaseid } } }
+    )
+
+    await DatabaseModel.deleteMany({ _id: req.query.databaseid  })
+    return res.json({ status: 'OK' })
+})
+
+app.get('/api/collections/delete', async (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+      
+    mongoose.connection.collection("mydatabases").updateOne(
+        { _id: req.query.databaseid },
+        { $pull: { 'collections': { _id: req.query.collectionid } } }
+    )
+
+    await CollectionModel.deleteMany({ _id: req.query.collectionid  })
+    return res.json({ status: 'OK' })
+})
+
 
 app.get('**', (req, res) => { 
 
