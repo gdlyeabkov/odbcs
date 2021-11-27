@@ -317,40 +317,45 @@ app.get('/api/documents/create', (req, res) => {
             if (err) {
                 return res.json({ "status": "Error" })
             } else {
-                DocumentModel.updateOne({ _id: document._id },
-                    { $push: 
-                        {
-                            fields: [
-                                {
-                                    type: JSON.parse(req.query.document),
-                                    value: JSON.parse(req.query.document)
-                                }
-                            ]
-                            
-                        }
-                }, (err, otherDocument) => {
-                    if (err) {
-                        return res.json({ "status": "error" })
-                    } else {
-                        CollectionModel.updateOne({ _id: req.query.collectionid },
-                            { $push: 
-                                {
-                                    documents: [
-                                        {
-                                            id: document._id
-                                        }
-                                    ]
-                                    
-                                }
-                        }, (err, collection) => {
-                            if (err) {
-                                return res.json({ "status": "error" })
-                            } else {
-                                return res.json({ "status": "OK" })    
+                Object.values(JSON.parse(req.query.document)).map((field, fieldIdx) => {
+                
+                    DocumentModel.updateOne({ _id: document._id },
+                        { $push: 
+                            {
+                                fields: [
+                                    {
+                                        key: [Object.keys(JSON.parse(req.query.document)), Object.values(JSON.parse(req.query.document))][0][fieldIdx],
+                                        value: [Object.keys(JSON.parse(req.query.document)), Object.values(JSON.parse(req.query.document))][1][fieldIdx]
+                                    }
+                                ]
+                                
                             }
-                        })
-                    }
+                    }, (err, otherDocument) => {
+                        if (err) {
+                            return res.json({ "status": "error" })
+                        } else {
+                            CollectionModel.updateOne({ _id: req.query.collectionid },
+                                { $push: 
+                                    {
+                                        documents: [
+                                            {
+                                                id: document._id
+                                            }
+                                        ]
+                                        
+                                    }
+                            }, (err, collection) => {
+                                if (err) {
+                                    return res.json({ "status": "error" })
+                                } else {
+                                    // return res.json({ "status": "OK" })    
+                                }
+                            })
+                        }
+                    })
+
                 })
+                return res.json({ "status": "OK" })
 
             }
         })

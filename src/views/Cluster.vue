@@ -530,13 +530,13 @@
                             <div class="coolectionsBodyArticleInfo">
                                 <div>
                                     <span>
-                                        COLLECTION SIZE: {{ 666 * activeCollection.documents.length }}B
+                                        COLLECTION SIZE: {{ 666 * documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}B
                                     </span>
                                     <span>
-                                        TOTAL DOCUEMNTS: {{ activeCollection.documents.length }}
+                                        TOTAL DOCUEMNTS: {{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}
                                     </span>
                                     <span>
-                                        INDEXES TOTAL SIZE: {{ 36 * activeCollection.documents.length }}KB
+                                        INDEXES TOTAL SIZE: {{ 36 * documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}KB
                                     </span>
                                 </div>
                             </div>
@@ -578,7 +578,7 @@
                                     QUERY RESULTS
                                 </span>
                                 <span>
-                                    1-1 OF 1
+                                    1-{{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }} ИЗ {{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}
                                 </span>
                             </div>
                             <!-- <div v-for="document in activeCollection.documents" :key="document._id">
@@ -591,22 +591,34 @@
                                     }}
                                 </span>
                             </div> -->
-                            <div v-for="document in documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id))" :key="document._id">
-                                <div v-for="field in document.fields" :key="field">
-                                    <span>
+                            <div v-for="document in documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id))" :key="document._id" class="fields">
+                                <div v-for="field in document.fields" :key="field" :style="`margin-left: calc(15px * ${1});`">
+                                    <span class="fieldKey fieldData">
                                         {{
-                                            field.type
+                                            `${field.key}: `
                                         }}
                                     </span>
-                                    <span>
+                                    <span :class="{fieldValue: true, fieldData: true, fieldValueString: typeof field.value  === 'string', fieldValueNumber: typeof field.value  === 'number', fieldValueBoolean: typeof field.value  === 'boolean', fieldValueObject: typeof field.value  === 'object'}">
                                         {{
-                                            field.value
+                                            typeof field.value  === 'string' ?
+                                                `\"${field.value}\"`
+                                            : typeof field.value  === 'object' ?
+                                                `Object`
+                                            :
+                                                field.value
                                         }}
+                                        <span v-if="typeof field.value  === 'object'" :title="[Object.keys(field.value), Object.values(field.value)].map((nestedField, fieldIdx) => {
+                                            return `${Object.keys(field.value)[fieldIdx]}: ${Object.values(field.value)[fieldIdx]}`
+                                        })">
+                                            {{
+                                                '{}'
+                                            }}
+                                        </span>
                                     </span>
                                 </div>
-                                <span>
+                                <!-- <span>
                                     a
-                                </span>
+                                </span> -->
                             </div>
                         </div>
                     </div>
@@ -1067,7 +1079,9 @@ export default {
             isCappedCollection: false,
             databaseName: '',
             collectionName: '',
-            code: '',
+            code: `{
+    \"_id\": ${Math.floor(Math.random() * 10000)}
+}`,
             isCodeViewDocuemnt: true, 
             token: window.localStorage.getItem('odbcstoken')
         }
@@ -1209,6 +1223,9 @@ export default {
                     alert('Вставил в коллекцию')
                     this.getCollections()
                     this.isCreateDocumentDialog = false
+                    this.code = `{
+    \"_id\": ${Math.floor(Math.random() * 10000)}
+}`
                 }
             })
 
@@ -1724,7 +1741,7 @@ export default {
 
     .coolectionsBody {
         display: flex;
-        height: 500px;
+        min-height: 500px;
     }
 
     .coolectionsBodyAside {
@@ -2006,6 +2023,38 @@ export default {
 
     .collectionPreviewContent {
         text-indent: 25px;
+    }
+
+    .fieldKey {
+        font-weight: bolder;
+    }
+
+    .fieldValue {
+        font-style: italic;
+    }
+
+    .fieldValueString {
+        color: rgb(0, 100, 200);
+    }
+
+    .fieldValueNumber {
+        color: rgb(0, 150, 0);
+    }
+
+    .fieldValueBoolean {
+        color: rgb(150, 50, 150);
+    }
+
+    .fieldValueObject {
+        font-weight: bolder;
+    }
+
+    .fieldData {
+        /* font-size: 12px; */
+    }
+
+    .fields {
+        margin: 25px 0px;
     }
 
 </style>
