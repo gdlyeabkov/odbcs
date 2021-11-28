@@ -219,148 +219,24 @@
                         Data Lake
                     </span>
                     <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
-                        Создать
+                        Сконфигурировать новое озеро данных
                     </button>
                 </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти развертывание базы данных..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
-                    </span>
-                </div>
-                <div v-if="clusters.length >= 1">
-                    <div v-for="cluster in clusters" :key="cluster.name" class="clusterInfo">
-                        <div class="clusterInfoHeader">
-                            <div class="clusterInfoHeaderItem">
-                                <div class="material-icons clusterInfoHeaderItemElement clusterInfoHeaderItemElementStatus">
-                                    
-                                </div>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.name
-                                    }}
-                                </span>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    Connect
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    View Monitoring
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster', query: { clusterid: cluster._id } })">
-                                    Browse Collections
-                                </button>
-                                <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
-                                    more_horiz
-                                </button>
-                            </div>
-                            <div class="clusterInfoHeaderItem">
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.free ?
-                                            'Бесплатный'
-                                        :
-                                            'Платный'
-                                    }}
-                                </span>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.shared ?
-                                            'Общий'
-                                        :
-                                            'Частный' 
-                                    }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="clusterInfoBody">
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Your cluster has been automatically paused due to prolonged inactivity.
-                            </span>
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Resume your cluster to connect to it and to gain access to your data.
-                            </span>
-                            <button class="btn btn-success clusterInfoBodyItem">
-                                Resume
-                            </button>
-                        </div>
-                        <div class="clusterInfoFooter">
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    VERSION
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.version
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    REGION
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.region
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    CLUSTER TIER
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.clusterTier
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    TYPE
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.type
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    BACKUPS
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.backups
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    LINKED REALM APP
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.linkedRealmApp
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    ATLAS SEARCH
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.atlasSearch
-                                    }}
-                                </span>
-                            </div>
-                        </div>
+                <div class="searchBlock">
+                    <div class="searchBlockItem">
+                        <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                            water
+                        </span>
+                        <span class="searchBlockItemElementHeader searchBlockItemElement">
+                            Create a Data Lake
+                        </span>
+                        <span class="searchBlockItemElement">
+                            Natively query and analyze data across AWS S3, Atlas Clusters and HTTP(S) Stores in-place using MQL
+                        </span>
+                        <button class="btn btn-success">
+                            Создать озеро данных
+                        </button>
                     </div>
-                </div>
-                <div v-else>
-                    <span>
-                        Вы еще ни создали ни 1 кластер
-                    </span>
                 </div>
                 <div class="projectsFooter">
                     <span>
@@ -380,148 +256,27 @@
                         Triggers
                     </span>
                     <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
-                        Создать
+                        Добавить триггер
                     </button>
                 </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти развертывание базы данных..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
-                    </span>
-                </div>
-                <div v-if="clusters.length >= 1">
-                    <div v-for="cluster in clusters" :key="cluster.name" class="clusterInfo">
-                        <div class="clusterInfoHeader">
-                            <div class="clusterInfoHeaderItem">
-                                <div class="material-icons clusterInfoHeaderItemElement clusterInfoHeaderItemElementStatus">
-                                    
-                                </div>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.name
-                                    }}
-                                </span>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    Connect
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    View Monitoring
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster', query: { clusterid: cluster._id } })">
-                                    Browse Collections
-                                </button>
-                                <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
-                                    more_horiz
-                                </button>
-                            </div>
-                            <div class="clusterInfoHeaderItem">
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.free ?
-                                            'Бесплатный'
-                                        :
-                                            'Платный'
-                                    }}
-                                </span>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.shared ?
-                                            'Общий'
-                                        :
-                                            'Частный' 
-                                    }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="clusterInfoBody">
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Your cluster has been automatically paused due to prolonged inactivity.
-                            </span>
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Resume your cluster to connect to it and to gain access to your data.
-                            </span>
-                            <button class="btn btn-success clusterInfoBodyItem">
-                                Resume
-                            </button>
-                        </div>
-                        <div class="clusterInfoFooter">
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    VERSION
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.version
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    REGION
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.region
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    CLUSTER TIER
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.clusterTier
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    TYPE
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.type
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    BACKUPS
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.backups
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    LINKED REALM APP
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.linkedRealmApp
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    ATLAS SEARCH
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.atlasSearch
-                                    }}
-                                </span>
-                            </div>
-                        </div>
+                <div class="searchBlock">
+                    <div class="searchBlockItem">
+                        <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                            bolt
+                        </span>
+                        <span class="searchBlockItemElementHeader searchBlockItemElement">
+                            This application has no triggers.
+                        </span>
+                        <span class="searchBlockItemElement">
+                            Triggers allow you to execute functions in real time based on database or scheduled events.
+                        </span>
+                        <button class="btn btn-success">
+                            Добавить триггер
+                        </button>
+                        <span class="link">
+                            Learn more about Triggers
+                        </span>
                     </div>
-                </div>
-                <div v-else>
-                    <span>
-                        Вы еще ни создали ни 1 кластер
-                    </span>
                 </div>
                 <div class="projectsFooter">
                     <span>
@@ -544,145 +299,27 @@
                         Создать
                     </button>
                 </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти развертывание базы данных..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
-                    </span>
-                </div>
-                <div v-if="clusters.length >= 1">
-                    <div v-for="cluster in clusters" :key="cluster.name" class="clusterInfo">
-                        <div class="clusterInfoHeader">
-                            <div class="clusterInfoHeaderItem">
-                                <div class="material-icons clusterInfoHeaderItemElement clusterInfoHeaderItemElementStatus">
-                                    
-                                </div>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.name
-                                    }}
-                                </span>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    Connect
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    View Monitoring
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster', query: { clusterid: cluster._id } })">
-                                    Browse Collections
-                                </button>
-                                <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
-                                    more_horiz
-                                </button>
-                            </div>
-                            <div class="clusterInfoHeaderItem">
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.free ?
-                                            'Бесплатный'
-                                        :
-                                            'Платный'
-                                    }}
-                                </span>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.shared ?
-                                            'Общий'
-                                        :
-                                            'Частный' 
-                                    }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="clusterInfoBody">
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Your cluster has been automatically paused due to prolonged inactivity.
-                            </span>
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Resume your cluster to connect to it and to gain access to your data.
-                            </span>
-                            <button class="btn btn-success clusterInfoBodyItem">
-                                Resume
-                            </button>
-                        </div>
-                        <div class="clusterInfoFooter">
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    VERSION
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.version
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    REGION
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.region
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    CLUSTER TIER
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.clusterTier
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    TYPE
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.type
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    BACKUPS
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.backups
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    LINKED REALM APP
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.linkedRealmApp
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    ATLAS SEARCH
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.atlasSearch
-                                    }}
-                                </span>
-                            </div>
-                        </div>
+                <div class="searchBlock">
+                    <div class="searchBlockItem">
+                        <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                            power
+                        </span>
+                        <span class="searchBlockItemElementHeader searchBlockItemElement">
+                            Enable the Data API
+                        </span>
+                        <span class="searchBlockItemElement">
+                            Access the data in your collection over fully managed and secure HTTPS Endpoints
+                        </span>
+                        <span class="searchBlockItemElement">
+                            Select the data source(s) you would like to enable the API on
+                        </span>
+                        <button disabled class="createDatabaseBtn btn btn-success">
+                            Включить Data API
+                        </button>
+                        <span class="link">
+                            Learn more about the Data API
+                        </span>
                     </div>
-                </div>
-                <div v-else>
-                    <span>
-                        Вы еще ни создали ни 1 кластер
-                    </span>
                 </div>
                 <div class="projectsFooter">
                     <span>
@@ -863,148 +500,68 @@
                     <span class="createProjectRowHeader">
                         Advanced
                     </span>
-                    <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
-                        Создать
-                    </button>
-                </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти развертывание базы данных..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
+                    <span>
+                        
                     </span>
                 </div>
-                <div v-if="clusters.length >= 1">
-                    <div v-for="cluster in clusters" :key="cluster.name" class="clusterInfo">
-                        <div class="clusterInfoHeader">
-                            <div class="clusterInfoHeaderItem">
-                                <div class="material-icons clusterInfoHeaderItemElement clusterInfoHeaderItemElementStatus">
-                                    
-                                </div>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.name
-                                    }}
-                                </span>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    Connect
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    View Monitoring
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster', query: { clusterid: cluster._id } })">
-                                    Browse Collections
-                                </button>
-                                <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
-                                    more_horiz
-                                </button>
-                            </div>
-                            <div class="clusterInfoHeaderItem">
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.free ?
-                                            'Бесплатный'
-                                        :
-                                            'Платный'
-                                    }}
-                                </span>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.shared ?
-                                            'Общий'
-                                        :
-                                            'Частный' 
-                                    }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="clusterInfoBody">
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Your cluster has been automatically paused due to prolonged inactivity.
-                            </span>
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Resume your cluster to connect to it and to gain access to your data.
-                            </span>
-                            <button class="btn btn-success clusterInfoBodyItem">
-                                Resume
-                            </button>
-                        </div>
-                        <div class="clusterInfoFooter">
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    VERSION
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.version
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    REGION
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.region
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    CLUSTER TIER
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.clusterTier
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    TYPE
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.type
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    BACKUPS
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.backups
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    LINKED REALM APP
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.linkedRealmApp
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    ATLAS SEARCH
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.atlasSearch
-                                    }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div v-else>
+                <div class="advancedBlock">
                     <span>
-                        Вы еще ни создали ни 1 кластер
+                        LDAP Authentication cannot be configured without an active dedicated cluster running MongoDB 3.6 or higher.
+                    </span>
+                </div>
+                <div class="cmdItem">
+                    <span class="cmdHeader cmdSubitem">
+                        LDAP Authentication
+                    </span>
+                    <span class="cmdContent cmdSubitem">
+                        LDAP authentication allows database users to log into dedicated (M10 or higher) Atlas clusters using credentials that are verified by a LDAP server you control. Database users can be configured in the project-level Access Manager.
+                    </span>
+                    <span class="cmdContent cmdSubitem advancedFooterContent">
+                        Turning on this feature will increase your daily cluster pricing. Read more.
+                    </span>
+                </div>
+                <div class="cmdItem">
+                    <span class="cmdHeader cmdSubitem">
+                        LDAP Authorization (LDAP Authentication required)
+                    </span>
+                    <span class="cmdContent cmdSubitem">
+                        LDAP authorization allows database users to be managed at LDAP group level. LDAP groups can be managed in the project-level Access Manager and be assigned a specific set of privileges. All database users in an LDAP group can then authenticate to dedicated (M10 or higher) Atlas clusters with those privileges.
+                    </span>
+                    <span class="cmdContent cmdSubitem advancedFooterContent">
+                        Turning on this feature will increase your daily cluster pricing. Read more.
+                    </span>
+                </div>
+                <div class="cmdItem">
+                    <span class="cmdHeader cmdSubitem">
+                        Encryption at Rest using your Key Management
+                    </span>
+                    <span class="cmdContent cmdSubitem">
+                        Provide your AWS Key Management Service (AWS KMS), Azure Key Vault, or Google Cloud KMS encryption key details to enable Encryption at Rest with the WiredTiger™ Encrypted Storage Engine.
+                    </span>
+                    <span class="cmdContent cmdSubitem advancedFooterContent">
+                        Newly deployed clusters will use your encryption key by default. Pre-existing clusters will not use your encryption key until you enable them individually. This feature will increase your daily cluster pricing. Read more.
+                    </span>
+                </div>
+                <div class="cmdItem">
+                    <span class="cmdHeader cmdSubitem">
+                        Database Auditing
+                    </span>
+                    <span class="cmdContent cmdSubitem">
+                        Database auditing allows you to customize log downloads with the users, groups, and actions you want to audit.
+                    </span>
+                    <span class="cmdContent cmdSubitem advancedFooterContent">
+                        Turning on this feature will increase your daily cluster pricing. Read more.
+                    </span>
+                </div>
+                <div class="cmdItem">
+                    <span class="cmdHeader cmdSubitem">
+                        Self-managed X.509 Authentication
+                    </span>
+                    <span class="cmdContent cmdSubitem">
+                        With self-managed X.509 authentication, you can configure Atlas to trust your public key infrastructure and issue certificates to users yourself. Read more
+                    </span>
+                    <span class="cmdContent cmdSubitem link">
+                        Read more
                     </span>
                 </div>
                 <div class="projectsFooter">
@@ -1294,6 +851,84 @@ export default {
         width: 15px;
         height: 15px;
         background-color: rgb(0, 150, 0);
+    }
+
+    .searchBlock {
+        display: flex;
+        justify-content: center;
+    }
+
+    .searchBlockItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0px 25px;
+    }
+
+    .searchBlockItemElement {
+        margin: 5px 0px;
+        text-align: center;
+    }
+
+    .searchBlockItemElementIcon {
+        font-size: 48px;
+    }
+
+    .searchBlockItemElementHeader {
+        font-weight: bolder;
+        font-size: 18px;
+    }
+
+    .createDatabaseBtn {
+        font-weight: bolder;
+        border: 1px solid rgb(200, 200, 200);
+        margin: 10px 0px;
+    }
+
+    .cmdHeader {
+        font-size: 24px;
+    }
+
+    .cmdContent {
+        
+    }
+
+    .cmdBtn {
+        color: rgb(0, 150, 0);
+        border: 1px solid rgb(0, 150, 0);
+        width: 200px;
+    }
+
+    .cmdItem {
+        display: flex;
+        flex-direction: column;
+        width: 500px;
+    }
+
+    .cmd {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cmdSubitem {
+        margin: 10px 0px;
+    }
+
+    .advancedFooterContent {
+        font-weight: bolder;
+    }
+
+    .advancedBlock {
+        box-sizing: border-box;
+        padding: 0px 25px;
+        display: flex;
+        align-items: center;
+        border-radius: 8px;
+        border: 1px solid rgb(210, 150, 130);
+        background-color: rgb(250, 220, 230);
+        width: 85%;
+        height: 50px;
+        margin: auto;
     }
 
 </style>
