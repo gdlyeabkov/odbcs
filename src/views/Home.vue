@@ -347,7 +347,7 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;Custom Roles&nbsp;&nbsp;&nbsp;&nbsp;
                     </span>
                 </div>
-                <div v-if="activeDatabaseAccessTab === 'Database Access'">
+                <div v-if="activeDatabaseAccessTab === 'Database Users'">
                     <div class="createProjectRow">
                         <span>
 
@@ -355,6 +355,55 @@
                         <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
                             Добавить нового пользователя БД
                         </button>
+                    </div>
+                    <div class="clusterTabs">
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Database Users' }" @click="activeDatabaseAccessTab = 'Database Users'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;User Name&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Custom Roles' }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Authentication Method&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Custom Roles' }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;MongoDB Roles&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Custom Roles' }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Resources&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Custom Roles' }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Actions&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                    </div>
+                    <div class="clusterTabs">
+                        <span :class="{ clusterTab: true, databaseUser: true }" @click="activeDatabaseAccessTab = 'Database Users'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;glebClusterUser&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, databaseUser: true }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;SCRAM&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="databaseUser">readWriteAnyDatabase</span>@admin&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, databaseUser: true }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;All Resources&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, databaseUserActions: true, databaseUserActionsSize: true }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            <div class="input-group databaseUserActions btn btn-light">
+                                <span class="material-icons input-group-text">
+                                    edit
+                                </span>
+                                <span>
+                                    EDIT
+                                </span>
+                            </div>
+                            <div class="input-group databaseUserActions">
+                                <span class="material-icons input-group-text">
+                                    delete
+                                </span>
+                                <span>
+                                    DELETE
+                                </span>
+                            </div>
+                        </span>
                     </div>
                 </div>
                 <div v-else-if="activeDatabaseAccessTab === 'Custom Roles'">
@@ -395,149 +444,144 @@
                     <span class="createProjectRowHeader">
                         Network Access
                     </span>
-                    <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
-                        Создать
-                    </button>
                 </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти развертывание базы данных..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
+                <div class="clusterTabs">
+                    <span :class="{ clusterTab: true, activeNetworkAccessTab: activeNetworkAccessTab === 'IP Access List' }" @click="activeNetworkAccessTab = 'IP Access List'">
+                        &nbsp;&nbsp;&nbsp;&nbsp;IP Access List&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab: true, activeNetworkAccessTab: activeNetworkAccessTab === 'Peering' }" @click="activeNetworkAccessTab = 'Peering'">
+                        &nbsp;&nbsp;&nbsp;&nbsp;Peering&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab: true, activeNetworkAccessTab: activeNetworkAccessTab === 'Private Endpoint' }" @click="activeNetworkAccessTab = 'Private Endpoint'">
+                        &nbsp;&nbsp;&nbsp;&nbsp;Private Endpoint&nbsp;&nbsp;&nbsp;&nbsp;
                     </span>
                 </div>
-                <div v-if="clusters.length >= 1">
-                    <div v-for="cluster in clusters" :key="cluster.name" class="clusterInfo">
-                        <div class="clusterInfoHeader">
-                            <div class="clusterInfoHeaderItem">
-                                <div class="material-icons clusterInfoHeaderItemElement clusterInfoHeaderItemElementStatus">
-                                    
-                                </div>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.name
-                                    }}
+                <div v-if="activeNetworkAccessTab === 'IP Access List'">
+                    <div class="createProjectRow">
+                        <span>
+
+                        </span>
+                        <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
+                            Добавить IP адресс
+                        </button>
+                    </div>
+                    <div class="clusterTabs">
+                        <span :class="{ clusterTab: true, activeNetworkAccessTab: activeNetworkAccessTab === 'IP Address' }" @click="activeDatabaseAccessTab = 'IP Address'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;IP Address&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Comment' }" @click="activeDatabaseAccessTab = 'Comment'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Comment&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Status' }" @click="activeDatabaseAccessTab = 'Status'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Actions' }" @click="activeDatabaseAccessTab = 'Actions'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Actions&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                    </div>
+                    <div class="clusterTabs">
+                        <span :class="{ clusterTab: true, activeNetworkAccessTab: activeNetworkAccessTab === 'IP Address' }" @click="activeDatabaseAccessTab = 'IP Address'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;0.0.0.0/0 (includes your current IP address)&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Comment' }" @click="activeDatabaseAccessTab = 'Comment'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Status' }" @click="activeDatabaseAccessTab = 'Status'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Active&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <span :class="{ clusterTab: true, databaseUserActions: true, databaseUserActionsSize: true }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                            <div class="input-group databaseUserActions btn btn-light">
+                                <span class="material-icons input-group-text">
+                                    edit
                                 </span>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    Connect
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement">
-                                    View Monitoring
-                                </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster', query: { clusterid: cluster._id } })">
-                                    Browse Collections
-                                </button>
-                                <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">
-                                    more_horiz
-                                </button>
+                                <span>
+                                    EDIT
+                                </span>
                             </div>
-                            <div class="clusterInfoHeaderItem">
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.free ?
-                                            'Бесплатный'
-                                        :
-                                            'Платный'
-                                    }}
+                            <div class="input-group databaseUserActions">
+                                <span class="material-icons input-group-text">
+                                    delete
                                 </span>
-                                <span class="clusterInfoHeaderItemElement">
-                                    {{
-                                        cluster.shared ?
-                                            'Общий'
-                                        :
-                                            'Частный' 
-                                    }}
+                                <span>
+                                    DELETE
                                 </span>
                             </div>
-                        </div>
-                        <div class="clusterInfoBody">
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Your cluster has been automatically paused due to prolonged inactivity.
+                        </span>
+                    </div>
+                </div>
+                <div v-else-if="activeNetworkAccessTab === 'Peering'">
+                    <div class="searchBlock">
+                        <div class="searchBlockItem">
+                            <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                                cloud
                             </span>
-                            <span class="clusterInfoBodyItem clusterInfoBodyItemContent">
-                                Resume your cluster to connect to it and to gain access to your data.
+                            <span class="searchBlockItemElementHeader searchBlockItemElement">
+                                Create a Peering Connection
                             </span>
-                            <button class="btn btn-success clusterInfoBodyItem">
-                                Resume
+                            <span class="searchBlockItemElement">
+                                Peer your application VPC with your Atlas VPC.
+                            </span>
+                            <button class="btn btn-success">
+                                Add Peering Connection
                             </button>
-                        </div>
-                        <div class="clusterInfoFooter">
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    VERSION
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.version
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    REGION
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.region
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    CLUSTER TIER
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.clusterTier
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    TYPE
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.type
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    BACKUPS
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.backups
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    LINKED REALM APP
-                                </span>
-                                <span class="clusterInfoFooterSubitem">
-                                    {{
-                                        cluster.linkedRealmApp
-                                    }}
-                                </span>
-                            </div>
-                            <div class="clusterInfoFooterItem">
-                                <span class="clusterInfoFooterSubitem">
-                                    ATLAS SEARCH
-                                </span>
-                                <span>
-                                    {{
-                                        cluster.atlasSearch
-                                    }}
-                                </span>
-                            </div>
+                            <span class="link">
+                                Learn more
+                            </span>
                         </div>
                     </div>
                 </div>
-                <div v-else>
-                    <span>
-                        Вы еще ни создали ни 1 кластер
-                    </span>
+                <div v-else-if="activeNetworkAccessTab === 'Private Endpoint'">
+                    <div class="privateEndpointRowBtns">
+                        <button class="btn btn-light createDatabaseBtn" @click="privateEndpointTab = 'dedicatedCluster'">
+                            Dedicated cluster
+                        </button>
+                        <button class="btn btn-light createDatabaseBtn"  @click="privateEndpointTab = 'dataLakeOnlineArchive'">
+                            Data Lake/Online Archive
+                        </button>
+                    </div>
+                    <div v-if="privateEndpointTab === 'dedicatedCluster'" class="searchBlock">
+                        <div class="searchBlockItem">
+                            <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                                link
+                            </span>
+                            <span class="searchBlockItemElementHeader searchBlockItemElement">
+                                Create a Private Endpoint
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Configure AWS PrivateLink, Google Cloud Private Service Connect, or Azure Private Link to connect to your cluster.
+                            </span>
+                            <button class="btn btn-success">
+                                Add Private Endpoint
+                            </button>
+                            <span class="link">
+                                Learn more
+                            </span>
+                        </div>
+                    </div>
+                    <div v-else-if="privateEndpointTab === 'dataLakeOnlineArchive'" class="searchBlock">
+                        <div  class="searchBlockItem">
+                            <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                                link
+                            </span>
+                            <span class="searchBlockItemElementHeader searchBlockItemElement">
+                                Configure a Private Endpoint
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Configure AWS PrivateLink to connect to your Data Lake / Online Archive.
+                            </span>
+                            <div class="privateEndpointRowBtns">
+                                <button class="btn btn-success">
+                                    Create new endpoint
+                                </button>
+                                <button class="btn btn-light createDatabaseBtn">
+                                    Add existing endpoint
+                                </button>
+                            </div>
+                            <span class="link">
+                                Learn more
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="projectsFooter">
                     <span>
@@ -651,6 +695,7 @@ export default {
             activeAsideTab: 'Databases',
             activeDatabaseAccessTab: 'Database Users',
             activeNetworkAccessTab: 'IP Access List',
+            privateEndpointTab: 'dedicatedCluster',
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -1007,6 +1052,32 @@ export default {
         text-decoration-thickness: 3px;
     }
 
+    .activeNetworkAccessTab {
+        font-weight: bolder;
+        text-decoration: underline;
+        text-underline-offset: 5px;
+        text-decoration-color: rgb(0, 150, 0);
+        text-decoration-thickness: 3px;
+    }
 
+
+    .databaseUser {
+        font-weight: bolder;
+    }
+
+    .databaseUserActions {
+        display: flex;
+        align-items: center;
+        width: 150px;
+    }
+
+    .databaseUserActionsSize {
+        width: 500px;
+        height: 35px;
+    }
+
+    .privateEndpointRowBtns {
+        display: flex;
+    }
 
 </style>

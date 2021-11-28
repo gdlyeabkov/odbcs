@@ -103,6 +103,12 @@ const DocumentSchema = new mongoose.Schema({
 
 const DocumentModel = mongoose.model('DocumentModel', DocumentSchema)
 
+const ProjectSchema = new mongoose.Schema({
+    name: String
+}, { collection : 'myprojects' })
+
+const ProjectModel = mongoose.model('ProjectModel', ProjectSchema)
+
 app.get('/api/cachers/create', (req, res) => {
         
     res.setHeader('Access-Control-Allow-Origin', '*');
