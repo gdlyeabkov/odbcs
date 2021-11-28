@@ -102,15 +102,73 @@
                 </div>
             </div>
         </div>
+        <div v-if="isContextMenu" class="contextMenu">
+            <div class="contextMenuMainItem">
+                <img src="https://assets-global.website-files.com/6064b31ff49a2d31e0493af1/610d75bbd917363ac7a1fec0_mongoDB.svg" alt="mongo db" class="contextMenuMainItemItem" width="75px" />
+                <span class="contextMenuMainItemItem contextMenuMainItemItemHeader">
+                    Gleb Dyakov
+                </span>
+                <span class="contextMenuMainItemItem">
+                    glebsilnei@mail.ru
+                </span>
+                <button class="btn btn-dark manageYourDBAccountBtn contextMenuMainItemItem">
+                    Manage your MongoDB Account
+                </button>
+            </div>
+            <div class="contextMenuItem firstContextMenuItem">
+                <span class="material-icons">
+                    cloud
+                </span>
+                <div class="contextMenuItemContent">
+                    <span class="contextMenuItemContentHeader">
+                        Cloud
+                    </span>
+                    <span class="contextMenuItemContentDescription">
+                        cloud.mongodb.com
+                    </span>
+                </div>
+                <span class="material-icons">
+                    arrow_drop_down
+                </span>
+            </div>
+            <div class="contextMenuItem">
+                <span class="material-icons">
+                    cloud
+                </span>
+                <div class="contextMenuItemContent">
+                    <span class="contextMenuItemContentHeader">
+                        Documentation
+                    </span>
+                    <span class="contextMenuItemContentDescription">
+                        cloud.mongodb.com
+                    </span>
+                </div>
+                <span class="material-icons">
+                    arrow_drop_down
+                </span>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
     name: 'Header',
+    props: {
+        activeTab: {
+            type: String,
+            default: 'Atlas'
+        }
+    },
     data() {
         return {
-            activeHeaderTab: 'Atlas'
+            activeHeaderTab: 'Atlas',
+            isContextMenu: true
+        }
+    },
+    watch: {
+        activeTab(tab) {
+            this.activeHeaderTab = tab
         }
     }
 }
@@ -244,6 +302,69 @@ export default {
         font-weight: bolder;
         color: rgb(0, 150, 0);
         box-shadow: 0px 4px 2px rgb(235, 235, 235);
+    }
+
+    .contextMenu {
+        border-radius: 8px;
+        background-color: rgb(255, 255, 255);
+        width: 325px;
+        min-height: 450px;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        z-index: 5;
+        border: 1px solid rgb(200, 200, 200);
+    }
+
+    .firstContextMenuItem {
+        border-left: 5px solid rgb(0, 125, 0);
+    }
+
+    .contextMenuItem {
+        box-sizing: border-box;
+        padding: 0px 25px;
+        width: 100%;
+        height: 50px;
+        border-top: 1px solid rgb(200, 200, 200);
+        border-bottom: 1px solid rgb(200, 200, 200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .contextMenuMainItem {
+        color: rgb(255, 255, 255);
+        width: 100%;
+        height: 250px;
+        background-color: rgb(0, 0, 0);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .contextMenuItemContent {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .manageYourDBAccountBtn {
+        border: 1px solid rgb(255, 255, 255);
+    }
+
+    .contextMenuMainItemItem {
+        margin: 5px 0px;
+    }
+
+    .contextMenuMainItemItemHeader {
+        font-weight: bolder;
+    }
+
+    .contextMenuItemContentHeader {
+        font-weight: bolder;
+    }
+
+    .contextMenuItemContentDescription {
+        color: rgb(0, 100, 255);
     }
 
 </style>

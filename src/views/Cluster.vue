@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Header />
+        <Header :activeTab="activeHeaderTab" />
         <div class="main">
             <div class="aside">
                 <div class="asideItemHeader">
@@ -252,15 +252,33 @@
                             </span>
                         </div>
                         <div class="collectionsHeaderContainer">
-                            <span class="collectionsHeaderItem">
-                                Default landing
-                            </span>
-                            <span class="collectionsHeaderItem">
-                                VISUALIZE YOUR DATA
-                            </span>
-                            <span class="collectionsHeaderItem">
-                                REFRESH
-                            </span>
+                            <div class="defaultLanding input-group collectionsHeaderItem">
+                                <span class="defaultLandingItem">
+                                    Default landing
+                                </span>
+                                <span  class="defaultLandingItem defaultLandingItemIcon material-icons">
+                                    info
+                                </span>
+                                <span  class="defaultLandingItem defaultLandingItemIcon material-icons">
+                                    toggle_off
+                                </span>
+                            </div>
+                            <div class="databasesHeaderBtnSize databasesHeaderBtn input-group collectionsHeaderItem" @click="activeHeaderTab = 'Charts'">
+                                <span class="databasesHeaderBtnSize material-icons input-group-text">
+                                    insert_chart_outlined
+                                </span>
+                                <span>
+                                    VISUALIZE YOUR DATA
+                                </span>
+                            </div>
+                            <div class="databasesHeaderBtnSize databasesHeaderBtn input-group collectionsHeaderItem">
+                                <span class="databasesHeaderBtnSize material-icons input-group-text">
+                                    refresh
+                                </span>
+                                <span>
+                                    REFRESH
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="coolectionsBody">
@@ -272,7 +290,7 @@
                                 <span class="material-icons input-group-text">
                                     search
                                 </span>
-                                <input type="text" placeholder="Пространства имен" class="form-control" />
+                                <input v-model="namespaces" type="text" placeholder="Пространства имен" class="form-control" />
                             </div>
                             
                             <div class="databases">
@@ -366,7 +384,7 @@
                                         </span>
                                     </div>
                                 </div> -->
-                                <div v-for="database in databases" :key="database.name" class="database" @click="switchDatabase($event, database)">
+                                <div v-for="database in databases.filter(database => database.name.includes(namespaces) || collections.filter(collection => database.collections.map(collection => collection.id).includes(collection._id)).some(collection => collection.name.includes(namespaces)))" :key="database.name" class="database" @click="switchDatabase($event, database)">
                                     <div class="databaseMain">
                                         <div class="databaseBlock">
                                             <span class="material-icons databaseItem" @click="toggleDatabase(database)">
@@ -409,7 +427,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="activeDatabase.name.length >= 1 && activeCollection.name.length <= 0" class="coolectionsBodyArticle">
+                        <div v-if="activeDatabase.name.length >= 1 && activeCollection.name.length <= 0" class="coolectionsBodyArticle collectionsBodyArticleContainer">
                             <span class="coolectionsBodyArticleHeader">
                                 {{
                                     activeDatabase.name
@@ -431,7 +449,7 @@
                                     CREATE COLLECTION
                                 </button>
                             </div>
-                            <div class="coolectionsBodyArticleTable">
+                            <div class="coolectionsBodyArticleTable" v-if="collections.filter(collection => activeDatabase.collections.map(collection => collection.id).includes(collection._id)).length >= 1">
                                 <div class="coolectionsBodyArticleTableColumn">
                                     <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
                                         &nbsp;&nbsp;Collection Name&nbsp;&nbsp;
@@ -520,106 +538,221 @@
                                     </span>
                                 </div>
                             </div>
+                            <span v-else>
+                                Вы еще не создали ни 1 коллекцию для этой БД
+                            </span>
                         </div>
                         <div v-else-if="activeDatabase.name.length >= 1 && activeCollection.name.length >= 1" class="coolectionsBodyArticle">
-                            <span class="coolectionsBodyArticleHeader">
-                                {{
-                                    `${activeDatabase.name}.${activeCollection.name}`
-                                }}
-                            </span>
-                            <div class="coolectionsBodyArticleInfo">
-                                <div>
-                                    <span>
-                                        COLLECTION SIZE: {{ 666 * documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}B
-                                    </span>
-                                    <span>
-                                        TOTAL DOCUEMNTS: {{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}
-                                    </span>
-                                    <span>
-                                        INDEXES TOTAL SIZE: {{ 36 * documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}KB
-                                    </span>
-                                </div>
-                            </div>
-                            <div>
-                                <span>
-                                    Find
-                                </span>
-                                <span>
-                                    Indexes
-                                </span>
-                                <span>
-                                    Schema Anti-Patterns
-                                </span>
-                                <span>
-                                    Aggregation
-                                </span>
-                                <span>
-                                    Search Indexes
-                                </span>
-                            </div>
-                            <div>
-                                <button class="btn btn-success" @click="isCreateDocumentDialog = true">
-                                    INSERT DOCUMENT
-                                </button>
-                            </div>
-                            <div>
-                                <input type="text" class="form-control" />
-                                <div>
-                                    <button class="btn btn-">
-                                        Apply
-                                    </button>
-                                    <button class="btn btn-light createDatabaseBtn">
-                                        Reset
-                                    </button>
-                                </div>
-                            </div>
-                            <div>
-                                <span>
-                                    QUERY RESULTS
-                                </span>
-                                <span>
-                                    1-{{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }} ИЗ {{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}
-                                </span>
-                            </div>
-                            <!-- <div v-for="document in activeCollection.documents" :key="document._id">
-                                {{
-                                    document.id
-                                }}
-                                <span v-for="field in document.fields" :key="field">
+                            <div class="collectionsBodyArticleContainer">
+                                <span class="coolectionsBodyArticleHeader">
                                     {{
-                                        field.type
+                                        `${activeDatabase.name}.${activeCollection.name}`
                                     }}
                                 </span>
-                            </div> -->
-                            <div v-for="document in documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id))" :key="document._id" class="fields">
-                                <div v-for="field in document.fields" :key="field" :style="`margin-left: calc(15px * ${1});`">
-                                    <span class="fieldKey fieldData">
-                                        {{
-                                            `${field.key}: `
-                                        }}
+                                <div class="coolectionsBodyArticleInfo">
+                                    <div class="collectionInfo">
+                                        <div class="collectionInfoItem">
+                                            <span class="collectionInfoItemHeader">
+                                                COLLECTION SIZE: 
+                                            </span>
+                                            <span>
+                                                {{ 666 * documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}B
+                                            </span>
+                                        </div>
+                                        <div class="collectionInfoItem">
+                                            <span class="collectionInfoItemHeader">
+                                                TOTAL DOCUMENTS: 
+                                            </span>
+                                            <span>
+                                                {{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}
+                                            </span>
+                                        </div>
+                                        <div class="collectionInfoItem">
+                                            <span class="collectionInfoItemHeader">
+                                                INDEXES TOTAL SIZE: 
+                                            </span>
+                                            <span>
+                                                {{ 36 * documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}KB
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="collectionTabs">
+                                    <span @click="activeCollectionTab = 'Find'" :class="{collectionTab: true, activeCollectionTab: activeCollectionTab === 'Find'}">
+                                        Find
                                     </span>
-                                    <span :class="{fieldValue: true, fieldData: true, fieldValueString: typeof field.value  === 'string', fieldValueNumber: typeof field.value  === 'number', fieldValueBoolean: typeof field.value  === 'boolean', fieldValueObject: typeof field.value  === 'object'}">
-                                        {{
-                                            typeof field.value  === 'string' ?
-                                                `\"${field.value}\"`
-                                            : typeof field.value  === 'object' ?
-                                                `Object`
-                                            :
-                                                field.value
-                                        }}
-                                        <span v-if="typeof field.value  === 'object'" :title="[Object.keys(field.value), Object.values(field.value)].map((nestedField, fieldIdx) => {
-                                            return `${Object.keys(field.value)[fieldIdx]}: ${Object.values(field.value)[fieldIdx]}`
-                                        })">
-                                            {{
-                                                '{}'
-                                            }}
-                                        </span>
+                                    <span @click="activeCollectionTab = 'Indexes'" :class="{collectionTab: true, activeCollectionTab: activeCollectionTab === 'Indexes'}">
+                                        Indexes
+                                    </span>
+                                    <span @click="activeCollectionTab = 'Schema Anti-Patterns'" :class="{collectionTab: true, activeCollectionTab: activeCollectionTab === 'Schema Anti-Patterns'}">
+                                        Schema Anti-Patterns
+                                    </span>
+                                    <span @click="activeCollectionTab = 'Aggregation'" :class="{collectionTab: true, activeCollectionTab: activeCollectionTab === 'Aggregation'}">
+                                        Aggregation
+                                    </span>
+                                    <span class="collectionTab" @click="activeClusterTab = 'Search'">
+                                        Search Indexes
                                     </span>
                                 </div>
-                                <!-- <span>
-                                    a
-                                </span> -->
                             </div>
+                            <div class="collectionBody" v-if="activeCollectionTab === 'Find'">
+                                <div class="insertDocumentBtnContainer">
+                                    <button class="btn btn-light createDatabaseBtn" @click="isCreateDocumentDialog = true">
+                                        INSERT DOCUMENT
+                                    </button>
+                                </div>
+                                <div class="documentsFilter">
+                                    <input type="text" class="form-control w-75" />
+                                    <div>
+                                        <button class="btn btn-success documentsFilterBtn">
+                                            Apply
+                                        </button>
+                                        <button class="btn btn-light createDatabaseBtn documentsFilterBtn">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span>
+                                        QUERY RESULTS
+                                    </span>
+                                    <span>
+                                        1-{{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }} ИЗ {{ documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id)).length }}
+                                    </span>
+                                </div>
+                                <!-- <div v-for="document in activeCollection.documents" :key="document._id">
+                                    {{
+                                        document.id
+                                    }}
+                                    <span v-for="field in document.fields" :key="field">
+                                        {{
+                                            field.type
+                                        }}
+                                    </span>
+                                </div> -->
+                                <div v-for="document in documents.filter(document => activeCollection.documents.map(document => document.id).includes(document._id))" :key="document._id" class="fields">
+                                    <div v-for="field in document.fields" :key="field" :style="`margin-left: calc(15px * ${1});`">
+                                        <span class="fieldKey fieldData">
+                                            {{
+                                                `${field.key}: `
+                                            }}
+                                        </span>
+                                        <span v-if="typeof field.value  === 'string'" :class="{fieldValue: true, fieldData: true, fieldValueString: true}">
+                                            {{
+                                                `\"${field.value}\"`
+                                            }}
+                                        </span>
+                                        <span v-else-if="typeof field.value  === 'object'" :class="{fieldValue: true, fieldData: true, fieldValueObject: true}">
+                                            Object
+                                            <span v-for="(nestedFld, nestedFldIdx) in Object.values(field.value)" :key="nestedFld" :style="`position: relative; left: calc(25px * ${depthOf(field.value)});`" >
+                                                <br/>
+                                                {{
+                                                    `${[Object.keys(field.value), Object.values(field.value)].map((nestedField, fieldIdx) => {
+                                                        return `${Object.keys(field.value)[fieldIdx]}: ${Object.values(field.value)[fieldIdx]}`
+                                                    })[nestedFldIdx]}`
+                                                }}
+
+                                            </span>
+                                        </span>
+                                        <span v-else :class="{fieldValue: true, fieldData: true, fieldValueString: typeof field.value  === 'string', fieldValueNumber: typeof field.value  === 'number', fieldValueBoolean: typeof field.value  === 'boolean', fieldValueObject: typeof field.value  === 'object'}">
+                                            {{
+                                                field.value
+                                            }}
+                                        </span>
+                                    </div>
+                                    <!-- <span>
+                                        a
+                                    </span> -->
+                                </div>
+
+                            </div>
+                            <div class="collectionBody" v-else-if="activeCollectionTab === 'Indexes'">
+                                <div class="insertDocumentBtnContainer">
+                                    <button class="btn btn-success" @click="isCreateDocumentDialog = true">
+                                        CREATE INDEX
+                                    </button>
+                                </div>
+                                <div class="coolectionsBodyArticleTable indexesCollectionBody" v-if="collections.filter(collection => activeDatabase.collections.map(collection => collection.id).includes(collection._id)).length >= 1">
+                                    <div class="coolectionsBodyArticleTableColumn">
+                                        <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;Name&nbsp;&nbsp;
+                                        </span>
+                                        <!-- <span class="link coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;myusers&nbsp;&nbsp;
+                                        </span> -->
+                                        <span class="coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;
+                                                <span class="indexesHeader" v-text="'_id'"></span>
+                                            &nbsp;&nbsp;
+                                        </span>
+                                    </div>
+                                    <div class="coolectionsBodyArticleTableColumn">
+                                        <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;SIZE&nbsp;&nbsp;
+                                        </span>
+                                        <span class="coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;
+                                                <span class="indexesHeader" v-text="`'36.0KB'`"></span>
+                                            &nbsp;&nbsp;
+                                        </span>
+                                    </div>
+                                    <div class="coolectionsBodyArticleTableColumn">
+                                        <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;USAGE&nbsp;&nbsp;
+                                        </span>
+                                        <span class="coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;
+                                                <span class="indexesHeader" v-text="`\< 1min`"></span>
+                                            &nbsp;&nbsp;
+                                        </span>
+                                    </div>
+                                    <div class="coolectionsBodyArticleTableColumn">
+                                        <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;PROPERTIES&nbsp;&nbsp;
+                                        </span>
+                                        <span class="coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;
+                                                <span class="indexesHeader" v-text="''"></span>
+                                            &nbsp;&nbsp;
+                                        </span>
+                                    </div>
+                                    <div class="coolectionsBodyArticleTableColumn">
+                                        <span class="coolectionsBodyArticleTableColumnHeader coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;ACTION&nbsp;&nbsp;
+                                        </span>
+                                        <span class="coolectionsBodyArticleTableColumnItem">
+                                            &nbsp;&nbsp;
+                                                <span class="indexesHeader" v-text="''"></span>
+                                            &nbsp;&nbsp;
+                                        </span>
+                                    </div>
+                                </div> 
+
+                            </div>
+                            <div class="collectionBody" v-else-if="activeCollectionTab === 'Schema Anti-Patterns'">
+                            
+                                <div class="searchBlock">
+                                    <div class="searchBlockItem">
+                                        <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                                            code
+                                        </span>
+                                        <span class="searchBlockItemElementHeader searchBlockItemElement">
+                                            No Schema suggestions for now.
+                                        </span>
+                                        <span class="searchBlockItemElement">
+                                            Schema suggestions are based on anti-patterns detected from a sample of documents in this collection. To see suggestions for the most active collections, visit the Performance Advisor page.
+                                        </span>
+                                        <button class="btn btn-success">
+                                            View docs
+                                        </button>
+                                        <span class="link">
+                                            Why don’t I see any schema recommendations?
+                                        </span>
+                                    </div>
+                                </div>
+                            
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -1083,6 +1216,9 @@ export default {
     \"_id\": ${Math.floor(Math.random() * 10000)}
 }`,
             isCodeViewDocuemnt: true, 
+            namespaces: '',
+            activeCollectionTab: 'Find',
+            activeHeaderTab: 'Atlas',
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -1159,6 +1295,18 @@ export default {
 
     },
     methods: {
+        depthOf(object) {
+            let level = 1
+            for(let key in object) {
+                if (!object.hasOwnProperty(key)) continue
+                if(typeof object[key] == 'object'){
+                    var depth = this.depthOf(object[key]) + 1
+                    level = Math.max(depth, level)
+                }
+            }
+            console.log(`level: ${level}`)
+            return level
+        },
         getDocuments(collection = this.activeCollection) {
 
             fetch(`http://localhost:4000/api/documents/all/?collectionid=${collection._id}`, {
@@ -1753,8 +1901,8 @@ export default {
 
     .coolectionsBodyArticle {
         width: 75%;
-        box-sizing: border-box;
-        padding: 15px;
+        /* box-sizing: border-box;
+        padding: 15px; */
     }
 
     .databases {
@@ -1792,8 +1940,8 @@ export default {
     }
 
     .coolectionsBodyArticleHeader {
-        font-weight: bolder;
-        font-size: 28px;
+        font-weight: 500;
+        font-size: 24px;
         color: rgb(65, 65, 65);
     }
 
@@ -2055,6 +2203,105 @@ export default {
 
     .fields {
         margin: 25px 0px;
+    }
+
+    .insertDocumentBtnContainer {
+        display: flex;
+        justify-content: flex-end;
+        margin: 15px 0px;
+    }
+
+    .documentsFilter {
+        display: flex;
+        align-items: center;
+    }
+
+    .documentsFilterBtn {
+        margin: 0px 5px;
+    }
+
+    .collectionTabs {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .collectionTab {
+        margin: 0px 5px;
+        cursor: pointer;
+        color: rgb(125, 125, 125);
+        font-weight: bolder;
+    }
+
+    .collectionTab:hover {
+        color: rgb(0, 150, 0);
+    }
+
+    .activeCollectionTab {
+        color: rgb(0, 150, 0);
+    }
+
+    .collectionInfo {
+        margin: 15px 0px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .collectionInfoItem {
+        margin: 0px 10px;
+    }
+
+    .collectionInfoItemHeader {
+        color: rgb(175, 175, 175);
+    }
+
+    .collectionBody {
+        background-color: rgb(230, 230, 230);
+        box-sizing: border-box;
+        padding: 15px;
+    }
+
+    .collectionsBodyArticleContainer {
+        box-sizing: border-box;
+        padding: 15px;
+    }
+
+    .indexesCollectionBody {
+        background-color: rgb(255, 255, 255);
+        width: 100%;
+    }
+
+    .indexesHeader {
+        font-size: 24px;
+    }
+
+    .databasesHeaderBtn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(235, 235, 235);
+        width: 140px;
+        font-size: 9px !important;
+        border-radius: 8px;
+        outline: 1px solid rgb(150, 150, 150) !important;
+    }
+
+    .databasesHeaderBtnSize {
+        height: 35px;
+        border: none;
+        font-size: 18px;
+    }
+
+    .defaultLanding {
+        width: 160px;
+        align-items: center;
+        display: flex;
+    }
+
+    .defaultLandingItem {
+        margin: 0px 5px;
+    }
+
+    .defaultLandingItemIcon {
+        font-size: 16px;
     }
 
 </style>
