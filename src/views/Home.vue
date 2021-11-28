@@ -330,7 +330,63 @@
                     </span>
                 </div>
             </div>
-            
+            <div class="article" v-else-if="activeAsideTab === 'Database Access'">
+                <span>
+                    GLEB'S ORG - 2021-01-28 > UNITYGAME
+                </span>
+                <div class="createProjectRow">
+                    <span class="createProjectRowHeader">
+                        Database Access
+                    </span>
+                </div>
+                <div class="clusterTabs">
+                    <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Database Users' }" @click="activeDatabaseAccessTab = 'Database Users'">
+                        &nbsp;&nbsp;&nbsp;&nbsp;Database Users&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span :class="{ clusterTab: true, activeDatabaseAccessTab: activeDatabaseAccessTab === 'Custom Roles' }" @click="activeDatabaseAccessTab = 'Custom Roles'">
+                        &nbsp;&nbsp;&nbsp;&nbsp;Custom Roles&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                </div>
+                <div v-if="activeDatabaseAccessTab === 'Database Access'">
+                    <div class="createProjectRow">
+                        <span>
+
+                        </span>
+                        <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
+                            Добавить нового пользователя БД
+                        </button>
+                    </div>
+                </div>
+                <div v-else-if="activeDatabaseAccessTab === 'Custom Roles'">
+                    <div class="searchBlock">
+                        <div class="searchBlockItem">
+                            <span class="material-icons searchBlockItemElement searchBlockItemElementIcon">
+                                people_alt
+                            </span>
+                            <span class="searchBlockItemElementHeader searchBlockItemElement">
+                                Create a Custom Role
+                            </span>
+                            <span class="searchBlockItemElement">
+                                Set up custom roles in order to assign actions and customize role permission assignments for your database users.
+                            </span>
+                            <button class="btn btn-success">
+                                Add New Custom Role
+                            </button>
+                            <span class="link">
+                                Learn more
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="projectsFooter">
+                    <span>
+                        System StatusAll GoodLast Login212.7.233.236
+                    </span>
+                    <span>
+                        ©2021 MongoDB, Inc.StatusTermsPrivacyAtlas BlogContact Sales
+                    </span>
+                </div>
+            </div>
             <div class="article" v-else-if="activeAsideTab === 'Network Access'">
                 <span>
                     GLEB'S ORG - 2021-01-28 > UNITYGAME
@@ -593,6 +649,8 @@ export default {
             },
             clusters: [],
             activeAsideTab: 'Databases',
+            activeDatabaseAccessTab: 'Database Users',
+            activeNetworkAccessTab: 'IP Access List',
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -930,5 +988,25 @@ export default {
         height: 50px;
         margin: auto;
     }
+
+    .clusterTabs {
+        box-shadow: 0px 4px 2px rgb(235, 235, 235);
+        display: flex;
+        margin: 15px 0px;
+    }
+
+    .clusterTab {
+        cursor: pointer;
+    }
+    
+    .activeDatabaseAccessTab {
+        font-weight: bolder;
+        text-decoration: underline;
+        text-underline-offset: 5px;
+        text-decoration-color: rgb(0, 150, 0);
+        text-decoration-thickness: 3px;
+    }
+
+
 
 </style>
