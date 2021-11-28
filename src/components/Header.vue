@@ -33,7 +33,7 @@
                 <span class="getHelpBtn headerItemElement">
                     Получить помощь    
                 </span>
-                <button class="personalArea btn btn-light">
+                <button class="personalArea btn btn-light" @click="isContextMenu = !isContextMenu">
                     <span>
                         Gleb
                     </span>
@@ -133,19 +133,90 @@
             </div>
             <div class="contextMenuItem">
                 <span class="material-icons">
-                    cloud
+                    menu_book
                 </span>
                 <div class="contextMenuItemContent">
                     <span class="contextMenuItemContentHeader">
                         Documentation
                     </span>
                     <span class="contextMenuItemContentDescription">
-                        cloud.mongodb.com
+                        docs.mongodb.com
                     </span>
                 </div>
                 <span class="material-icons">
                     arrow_drop_down
                 </span>
+            </div>
+            <div class="contextMenuItem">
+                <span class="material-icons">
+                    school
+                </span>
+                <div class="contextMenuItemContent">
+                    <span class="contextMenuItemContentHeader">
+                        University
+                    </span>
+                    <span class="contextMenuItemContentDescription">
+                        university.mongodb.com
+                    </span>
+                </div>
+                <span class="material-icons">
+                    arrow_drop_down
+                </span>
+            </div>
+            <div class="contextMenuItem">
+                <span class="material-icons">
+                    forum
+                </span>
+                <div class="contextMenuItemContent">
+                    <span class="contextMenuItemContentHeader">
+                        Developer Hub
+                    </span>
+                    <span class="contextMenuItemContentDescription">
+                        developer.mongodb.com
+                    </span>
+                </div>
+                <span class="material-icons">
+                    arrow_drop_down
+                </span>
+            </div>
+            <div class="contextMenuItem">
+                <span class="material-icons">
+                    hub
+                </span>
+                <div class="contextMenuItemContent">
+                    <span class="contextMenuItemContentHeader">
+                        Support
+                    </span>
+                    <span class="contextMenuItemContentDescription">
+                        support.mongodb.com
+                    </span>
+                </div>
+                <span class="material-icons">
+                    arrow_drop_down
+                </span>
+            </div>
+            <div class="contextMenuItem">
+                <span class="material-icons">
+                    support_agent
+                </span>
+                <div class="contextMenuItemContent">
+                    <span class="contextMenuItemContentHeader">
+                        Give us feedback
+                    </span>
+                    <span class="contextMenuItemContentDescription">
+                        
+                    </span>
+                </div>
+                <span class="material-icons">
+                    
+                </span>
+            </div>
+            <div class="contextMenuItem">
+                <div class="contextMenuItemContent">
+                    <span class="contextMenuItemContentHeader">
+                        Logout
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -163,7 +234,7 @@ export default {
     data() {
         return {
             activeHeaderTab: 'Atlas',
-            isContextMenu: true
+            isContextMenu: false
         }
     },
     watch: {
@@ -307,11 +378,11 @@ export default {
     .contextMenu {
         border-radius: 8px;
         background-color: rgb(255, 255, 255);
-        width: 325px;
+        width: calc(325px - 15px);
         min-height: 450px;
-        position: fixed;
-        top: 0px;
-        left: 0px;
+        position: absolute;
+        top: 75px;
+        left: calc(100% - 325px);
         z-index: 5;
         border: 1px solid rgb(200, 200, 200);
     }
