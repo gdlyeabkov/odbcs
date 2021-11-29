@@ -68,7 +68,8 @@ const CacherSchema = new mongoose.Schema({
     restrictProductionSupportEmployeeAccessToBackendInfrastructure: {
         type: Boolean,
         default: false
-    }
+    },
+    organizationId: String
 }, { collection : 'mycachers' })
 
 const CacherModel = mongoose.model('CacherModel', CacherSchema);
@@ -146,20 +147,33 @@ app.get('/api/cachers/create', (req, res) => {
                 cacherExists = true
             }
         })
-        if(cacherExists){
+        if (cacherExists) {
             return res.json({ status: 'Error' })
-
         } else {
+            
+            let alphabet = "abcdefghjiklmnoprstuvwxyz"
+            let organizationId = ''
+            for(let i = 0; i < Math.floor(Math.random() * 10); i++){
+                let randomIndex = Math.floor(Math.random() * alphabet.length)
+                let randomLetter = alphabet[randomIndex]
+                organizationId += randomLetter
+            }
+            let encodedOrganizationId = bcrypt.hashSync(organizationId, saltRounds)
+            
+
             let encodedPassword = "#"
             const salt = bcrypt.genSalt(saltRounds)
             encodedPassword = bcrypt.hashSync(req.query.cacherpassword, saltRounds)
-            const cacher = new CacherModel({ email: req.query.cacheremail, firstName: req.query.cacherfirstname, lastName: req.query.cacherlastname, password: encodedPassword, phoneNumber: req.query.cacherphonenumber, companyName: req.query.cachercompanyname, jobFunction: req.query.cacherjobfunction, country: req.query.cachercountry, project: req.query.projectname });
+            let companyName = req.query.cachercompanyname
+            if (companyName.length <= 0) {
+                companyName = `Неизвестно`
+            }
+            const cacher = new CacherModel({ email: req.query.cacheremail, firstName: req.query.cacherfirstname, lastName: req.query.cacherlastname, password: encodedPassword, phoneNumber: req.query.cacherphonenumber, companyName: companyName, jobFunction: req.query.cacherjobfunction, country: req.query.cachercountry, project: req.query.projectname, organizationId: encodedOrganizationId })
             cacher.save(function (err) {
                 if(err){
                     return res.json({ "status": "Error" })
                 } else {
                     return res.json({ "status": "OK" })
-                    
                 }
             })
         }
@@ -767,6 +781,97 @@ app.get('/api/projects/get', (req, res) => {
         return res.json({ 'status': 'OK', 'project': project })
     })
 
+})
+
+app.get('/api/cachers/companyname/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    CacherModel.updateOne({ email: req.query.cacheremail },
+    {
+        companyName: req.query.companyname
+    }, (err, cacher) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/cachers/restrictproductionsupportemployeeaccesstobackendinfrastructure/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    CacherModel.updateOne({ email: req.query.cacheremail },
+    {
+        restrictProductionSupportEmployeeAccessToBackendInfrastructure: req.query.value
+    }, (err, cacher) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/cachers/requiremultifactorauthentication/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    CacherModel.updateOne({ email: req.query.cacheremail },
+    {
+        requireMultiFactorAuthentication: req.query.value
+    }, (err, cacher) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/cachers/requireipaccesslistforpublicapi/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    console.log(`req.query.value: ${req.query.value}`)
+    CacherModel.updateOne({ email: req.query.cacheremail },
+    {
+        requireIPAccessListForPublicAPI: req.query.value
+    }, (err, cacher) => {
+        if (err) {
+            // return res.json({ status: 'Error' })
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/projects/rename', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        name: req.query.projectname
+    }, (err, cacher) => {
+        if (err) {
+            return res.json({ status: 'Error' })
+        }
+        return res.json({ status: 'OK' })
+    })
 })
 
 app.get('**', (req, res) => { 

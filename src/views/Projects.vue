@@ -100,7 +100,7 @@
                             </span> -->
                             <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
                                 {{
-                                    '1 User'
+                                    `${project.members.length} User${project.members.length >= 2 ? 's' : ''}`
                                 }}
                             </span>
                         </div>
@@ -116,7 +116,7 @@
                             </span> -->
                             <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
                                 {{
-                                    '0 Teams'
+                                    `${project.members.length >= 2 ? 1 : 0} Teams`
                                 }}
                             </span>
                         </div>
@@ -156,9 +156,9 @@
                                     delete
                                 </span>
                             </div> -->
-                            <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
+                            <span v-for="(project, projectIdx) in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
                                 <div class="projectTableCell actionsBtns">
-                                    <span class="material-icons btn btn-light actionsBtn">
+                                    <span class="material-icons btn btn-light actionsBtn" @click="toggleProjectContextMenu(projectIdx)">
                                         more_horiz
                                     </span>
                                     <span class="material-icons btn btn-light actionsBtn" @click="deleteProject(project)">
@@ -565,7 +565,9 @@
                             Organization ID
                         </span>
                         <span>
-                            601286ece82e5f44a9d635fa
+                            {{
+                                cacher.organizationId
+                            }}
                         </span>
                     </div>
                     <div class="settingsItem">
@@ -574,7 +576,9 @@
                         </span>
                         <div class="settingsItemRow">
                             <span class="settingsItemHeader">
-                                Gleb's Org - 2021-01-28
+                                {{
+                                    cacher.companyName
+                                }}
                             </span>
                             <span class="btn btn-light createDatabaseBtn material-icons editBtn" @click="isEditOrganizationName = !isEditOrganizationName">
                                 edit
@@ -592,7 +596,7 @@
                             <button class="btn btn-light createDatabaseBtn">
                                 Cancel
                             </button>
-                            <button class="btn btn-success">
+                            <button class="btn btn-success" @click="setCompanyName()">
                                 Save
                             </button>
                         </div>
@@ -602,7 +606,9 @@
                             Created On
                         </span>
                         <span>
-                            01/28/21 - 09:42:04 AM
+                            {{
+                                `${this.cacher.created.split('T')[0].split('-')[1]}/${this.cacher.created.split('T')[0].split('-')[2]}/${this.cacher.created.split('T')[0].split('-')[0]} - ${this.cacher.created.split('T')[1].split(':')[0]}:${this.cacher.created.split('T')[1].split(':')[1]} AM`
+                            }}
                         </span>
                     </div>
                     <div class="settingsItem">
@@ -623,7 +629,7 @@
                                     Enable your own MFA first
                                 </span>
                             </div>
-                            <span class="settingItemChip material-icons">
+                            <span class="settingItemChip material-icons" @click="setRequireMultiFactorAuthentication">
                                 {{
                                     requireMultiFactorAuthentication ?
                                         'toggle_off'
@@ -661,7 +667,7 @@
                                 Docs
                             </span>
                         </div>
-                        <span class="settingItemChip material-icons">
+                        <span class="settingItemChip material-icons"  @click="setRequireIPAccessListForPublicAPI()">
                             {{
                                 requireIPAccessListForPublicAPI ?
                                     'toggle_off'
@@ -687,7 +693,7 @@
                                 </span>
                             </div>
                         </div>
-                        <span class="settingItemChip material-icons">
+                        <span class="settingItemChip material-icons"  @click="setRestrictProductionSupportEmployeeAccessToBackendInfrastructure">
                             {{
                                 restrictProductionSupportEmployeeAccessToBackendInfrastructure ?
                                     'toggle_off'
@@ -713,7 +719,7 @@
                         <span class="settingsItemHeader">
                             Delete Organization
                         </span>
-                        <button class="btn btn-danger">
+                        <button class="btn btn-danger" @click="organizationName = 'Неизвестно'; setCompanyName()">
                             Delete
                         </button>
                     </div>
@@ -1329,6 +1335,28 @@
                 </div>
             </div>
         </div>
+        <div class="projectContextMenu" v-if="isProjectContextMenu" ref="projectContextMenu">
+            <span class="projectContextMenuItem">
+                Move Project
+            </span>
+            <span class="projectContextMenuItem">
+                Edit Project
+            </span>
+            <span class="projectContextMenuItem">
+                Copy Project ID
+            </span>
+            <span class="projectContextMenuItem">
+                Visit Project Settings
+            </span>
+            <span class="projectContextMenuItem">
+                Leave Project
+            </span>
+        </div>
+        <div v-if="isProjectRenameDialog" class="dialogBackdrop">
+            <div class="dialog">
+
+            </div>
+        </div>
         <Footer />
     </div>
 </template>
@@ -1359,6 +1387,9 @@ export default {
             projects: [],
             keywords: '',
             projectMembers: [],
+            cacher: {},
+            isProjectContextMenu: false,
+            isProjectRenameDialog: false,
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -1402,6 +1433,9 @@ export default {
                             role: 'Project Owner'
                         }
                     ]
+                    this.requireMultiFactorAuthentication = this.cacher.requireMultiFactorAuthentication
+                    this.requireIPAccessListForPublicAPI = this.cacher.requireIPAccessListForPublicAPI
+                    this.restrictProductionSupportEmployeeAccessToBackendInfrastructure = this.cacher.restrictProductionSupportEmployeeAccessToBackendInfrastructure
                 }
             })
 
@@ -1409,6 +1443,195 @@ export default {
 
     },
     methods: {
+        setRestrictProductionSupportEmployeeAccessToBackendInfrastructure() {
+
+            fetch(`http://localhost:4000/api/cachers/restrictproductionsupportemployeeaccesstobackendinfrastructure/set/?cacheremail=${this.cacher.email}&value=${!this.restrictProductionSupportEmployeeAccessToBackendInfrastructure}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    this.isProjectRenameDialog = true
+                }
+            })
+
+        },
+        toggleProjectContextMenu(delta) {
+            alert(`delta: ${delta}`)
+            this.isProjectContextMenu = !this.isProjectContextMenu
+            this.$refs.projectContextMenu.style = `
+                display: flex;
+                flex-direction: column;
+                width: 200px;
+                height: 195px;
+                background-color: rgb(255, 255, 255);
+                border-radius: 8px;
+                box-shadow: 0px 0px 10px rgb(150, 150, 150);
+                position: absolute;
+                top: ${410 + 50 * delta}px;
+                left: 1015px;
+                z-index: 5;
+                box-sizing: border-box;
+                padding: 15px;
+            `
+
+        },
+        setRestrictProductionSupportEmployeeAccessToBackendInfrastructure() {
+
+            fetch(`http://localhost:4000/api/cachers/restrictproductionsupportemployeeaccesstobackendinfrastructure/set/?cacheremail=${this.cacher.email}&value=${!this.restrictProductionSupportEmployeeAccessToBackendInfrastructure}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Обновил переключатель № 3')
+                    this.restrictProductionSupportEmployeeAccessToBackendInfrastructure = !this.restrictProductionSupportEmployeeAccessToBackendInfrastructure
+                    this.cacher.restrictProductionSupportEmployeeAccessToBackendInfrastructure = this.restrictProductionSupportEmployeeAccessToBackendInfrastructure
+                }
+            })
+
+        },
+        setRequireIPAccessListForPublicAPI() {
+
+            fetch(`http://localhost:4000/api/cachers/requireipaccesslistforpublicapi/set/?value=${this.cacher.email}&value=${!this.requireIPAccessListForPublicAPI}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Обновил переключатель № 2')
+                    this.requireIPAccessListForPublicAPI = !this.requireIPAccessListForPublicAPI
+                    this.cacher.requireIPAccessListForPublicAPI = this.requireIPAccessListForPublicAPI
+                }
+            })
+
+        },
+        setRequireMultiFactorAuthentication() {
+
+            fetch(`http://localhost:4000/api/cachers/requiremultifactorauthentication/set/?cacheremail=${this.cacher.email}&value=${!this.requireMultiFactorAuthentication}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Обновил переключатель № 1')
+                    this.requireMultiFactorAuthentication = !this.requireMultiFactorAuthentication
+                    this.cacher.requireMultiFactorAuthentication = this.requireMultiFactorAuthentication
+                }
+            })
+
+        },
+        setCompanyName() {
+
+            fetch(`http://localhost:4000/api/cachers/companyname/set/?cacheremail=${this.cacher.email}&companyname=${this.organizationName}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Обновил имя компании')
+                    this.cacher.companyName = this.organizationName
+                    this.organizationName = ''
+                    this.isEditOrganizationName = false
+                }
+            })
+
+        },
         debugProjectMembers() {
             this.projectMembers.map(projectMember => {
                 alert(`Отладка: ${projectMember.email}; ${projectMember.role}`)
@@ -1912,6 +2135,7 @@ export default {
     .projectMember {
         justify-content: space-around;
         display: flex;
+        margin: 10px 0px;
     }
 
     .isCreateProjectStepComplete {
@@ -1930,6 +2154,44 @@ export default {
         margin: 0px 10px;
         height: 35px;
         display: flex;
+    }
+
+    .projectContextMenu {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+        height: 195px;
+        background-color: rgb(255, 255, 255);
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgb(150, 150, 150);
+        position: absolute;
+        top: 410px;
+        left: 1015px;
+        z-index: 5;
+        box-sizing: border-box;
+        padding: 15px;
+    }
+
+    .projectContextMenuItem {
+        margin: 5px 0px;
+    }
+
+    .dialogBackdrop {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        background-color: rgba(0, 0, 0, 0.6);
+        width: 100%;
+        height: 100%;
+    }
+
+    .dialog {
+        width: 50%;
+        height: 50%;
+        background-color: rgb(255, 255, 255);
+        border-radius: 15px;
+        box-sizing: border-box;
+        padding: 35px;
     }
 
 </style>
