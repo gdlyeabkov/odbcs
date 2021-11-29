@@ -8,6 +8,7 @@ import Projects from '../views/Projects.vue'
 import ProjectCreator from '../views/ProjectCreator.vue'
 import Cluster from '../views/Cluster.vue'
 import ClusterRegister from '../views/ClusterRegister.vue'
+import Project from '../views/Project.vue'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,11 @@ const routes = [
     path: '/clusters/register',
     name: 'ClusterRegister',
     component: ClusterRegister
+  },
+  {
+    path: '/project',
+    name: 'Project',
+    component: Project
   },
   
 ]

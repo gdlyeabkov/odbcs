@@ -1342,10 +1342,10 @@
             <span class="projectContextMenuItem" @click="isProjectRenameDialog = true">
                 Edit Project
             </span>
-            <span class="projectContextMenuItem">
+            <span class="projectContextMenuItem" @click="copyProjectId">
                 Copy Project ID
             </span>
-            <span class="projectContextMenuItem">
+            <span class="projectContextMenuItem" @click="currentProject = null; projectsTab = 'Settings'">
                 Visit Project Settings
             </span>
             <span class="projectContextMenuItem">
@@ -1377,6 +1377,7 @@
                 </div>
             </div>
         </div>
+        <input class="hiddenProjectID" type="text" ref="currentProjectId" />
         <Footer />
     </div>
 </template>
@@ -1465,6 +1466,15 @@ export default {
 
     },
     methods: {
+        copyProjectId() {
+            this.$refs.currentProjectId.value = this.currentProject._id
+            this.$refs.currentProjectId.select()
+            document.execCommand('copy')
+            alert(`id текущего проекта скопирован`)
+            this.currentProject = null
+            this.$refs.currentProjectId.value = ''
+            this.isProjectContextMenu = false
+        },
         renameProject() {
 
             fetch(`http://localhost:4000/api/projects/rename/?projectid=${this.currentProject._id}&projectname=${this.projectNewName}`, {
@@ -2259,6 +2269,16 @@ export default {
     .closeRow {
         display: flex;
         justify-content: flex-end;
+    }
+
+    .dialogHeader {
+        font-size: 20px;
+        font-weight: bolder;
+    }
+
+    .hiddenProjectID {
+        border: none;
+        outline: none
     }
 
 </style>
