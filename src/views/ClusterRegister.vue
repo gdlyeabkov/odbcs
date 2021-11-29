@@ -218,6 +218,7 @@ export default {
                 if (JSON.parse(result).status === 'OK') {
                     alert('Пользователя нашел')
                     this.cacher = JSON.parse(result).cacher
+                    this.projectName = this.$route.query.projectname
                 }
             })
             
@@ -228,7 +229,7 @@ export default {
         createCluster() {
             
             console.log(`создал кластер`)
-            fetch(`http://localhost:4000/api/clusters/create/?clustername=${this.clusterName}&free=${this.free}&shared=${this.shared}&version=${this.version}&region=${this.region}&clustertier=${this.clusterTier}&type=${this.type}&backups=${this.backups}&linkedrealmapp=${this.linkedRealmApp}&atlassearch=${this.atlasSearch}&cacheremail=${this.cacher.email}`, {
+            fetch(`http://localhost:4000/api/clusters/create/?clustername=${this.clusterName}&free=${this.free}&shared=${this.shared}&version=${this.version}&region=${this.region}&clustertier=${this.clusterTier}&type=${this.type}&backups=${this.backups}&linkedrealmapp=${this.linkedRealmApp}&atlassearch=${this.atlasSearch}&cacheremail=${this.cacher.email}&projectname=${this.projectName}`, {
                 mode: 'cors',
                 method: 'GET'
             }).then(response => response.body).then(rb  => {
@@ -254,7 +255,8 @@ export default {
             .then(result => {
                 if (JSON.parse(result).status === 'OK') {
                     alert('кластер создан')
-                    this.$router.push({ name: 'Cluster' })
+                    let cluster = JSON.parse(result).cluster
+                    this.$router.push({ name: 'Cluster', query: { 'clusterid': cluster._id } })
                 }
             })
 

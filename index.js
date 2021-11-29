@@ -55,7 +55,20 @@ const CacherSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    clusters: [mongoose.Schema.Types.Map]
+    projects: [mongoose.Schema.Types.Map],
+    clusters: [mongoose.Schema.Types.Map],
+    requireMultiFactorAuthentication: {
+        type: Boolean,
+        default: false
+    },
+    requireIPAccessListForPublicAPI: {
+        type: Boolean,
+        default: false
+    },
+    restrictProductionSupportEmployeeAccessToBackendInfrastructure: {
+        type: Boolean,
+        default: false
+    }
 }, { collection : 'mycachers' })
 
 const CacherModel = mongoose.model('CacherModel', CacherSchema);
@@ -75,7 +88,8 @@ const ClusterSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    databases: [mongoose.Schema.Types.Map]
+    databases: [mongoose.Schema.Types.Map],
+    project: String
 }, { collection : 'myclusters' })
 
 const ClusterModel = mongoose.model('ClusterModel', ClusterSchema)
@@ -104,7 +118,10 @@ const DocumentSchema = new mongoose.Schema({
 const DocumentModel = mongoose.model('DocumentModel', DocumentSchema)
 
 const ProjectSchema = new mongoose.Schema({
-    name: String
+    name: String,
+    cacher: String,
+    clusters: [mongoose.Schema.Types.Map],
+    members: [mongoose.Schema.Types.Map]
 }, { collection : 'myprojects' })
 
 const ProjectModel = mongoose.model('ProjectModel', ProjectSchema)
@@ -136,7 +153,7 @@ app.get('/api/cachers/create', (req, res) => {
             let encodedPassword = "#"
             const salt = bcrypt.genSalt(saltRounds)
             encodedPassword = bcrypt.hashSync(req.query.cacherpassword, saltRounds)
-            const cacher = new CacherModel({ email: req.query.cacheremail, firstName: req.query.cacherfirstname, lastName: req.query.cacherlastname, password: encodedPassword, phoneNumber: req.query.cacherphonenumber, companyName: req.query.cachercompanyname, jobFunction: req.query.cacherjobfunction, country: req.query.cachercountry });
+            const cacher = new CacherModel({ email: req.query.cacheremail, firstName: req.query.cacherfirstname, lastName: req.query.cacherlastname, password: encodedPassword, phoneNumber: req.query.cacherphonenumber, companyName: req.query.cachercompanyname, jobFunction: req.query.cacherjobfunction, country: req.query.cachercountry, project: req.query.projectname });
             cacher.save(function (err) {
                 if(err){
                     return res.json({ "status": "Error" })
@@ -191,7 +208,7 @@ app.get('/api/databases/create', (req, res) => {
                             }
                     }, (err, cacher) => {
                         if(err){
-                            return res.json({ "status": "error" })
+                            return res.json({ "status": "Error" })
                         } else {
 
                             // здесь
@@ -229,7 +246,7 @@ app.get('/api/databases/create', (req, res) => {
                                                     }
                                             }, (err, database) => {
                                                 if (err) {
-                                                    return res.json({ "status": "error" })
+                                                    return res.json({ "status": "Error" })
                                                 } else {
                                                     return res.json({ "status": "OK" })    
                                                 }
@@ -352,7 +369,7 @@ app.get('/api/documents/create', (req, res) => {
                                     }
                             }, (err, collection) => {
                                 if (err) {
-                                    return res.json({ "status": "error" })
+                                    return res.json({ "status": "Error" })
                                 } else {
                                     // return res.json({ "status": "OK" })    
                                 }
@@ -411,15 +428,14 @@ app.get('/api/clusters/create', (req, res) => {
         let clusterExists = false
 
         allClusters.forEach(cluster => {
-            if(cluster.name.includes(req.query.clustername)){
-                clusterExists = true
-            }
+            // if (cluster.name.includes(req.query.clustername)) {
+            //     clusterExists = true
+            // }
         })
-        if(clusterExists){
+        if (clusterExists) {
             return res.json({ status: 'Error' })
-
         } else {
-            const cluster = new ClusterModel({ name: req.query.clustername, free: req.query.free, shared: req.query.shared, version: req.query.version, region: req.query.region, clusterTier: req.query.clustertier, type: req.query.type, backups: req.query.backups, linkedRealmApp: req.query.linkedrealmapp, atlasSearch: req.query.atlassearch  })
+            const cluster = new ClusterModel({ name: req.query.clustername, free: req.query.free, shared: req.query.shared, version: req.query.version, region: req.query.region, clusterTier: req.query.clustertier, type: req.query.type, backups: req.query.backups, linkedRealmApp: req.query.linkedrealmapp, atlasSearch: req.query.atlassearch, project: req.query.projectname  })
             cluster.save(function (err, cluster) {
                 if (err) {
                     return res.json({ "status": "Error" })
@@ -435,10 +451,26 @@ app.get('/api/clusters/create', (req, res) => {
                                 
                             }
                     }, (err, cacher) => {
-                        if(err){
+                        if (err) {
                             return res.json({ "status": "error" })
                         } else {
-                            return res.json({ "status": "OK" })
+                            ProjectModel.updateOne({ name: req.query.projectname },
+                                { $push: 
+                                    {
+                                        clusters: [
+                                            {
+                                                id: cluster._id
+                                            }
+                                        ]
+                                        
+                                    }
+                            }, (err, project) => {
+                                if (err) {
+                                    return res.json({ "status": "error" })
+                                } else {
+                                    return res.json({ "status": "OK", 'cluster': cluster })
+                                }
+                            })
                         }
                     })
                 }
@@ -472,11 +504,25 @@ app.get('/api/clusters/all', (req, res) => {
     res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
   
-    let query =  CacherModel.findOne({ 'email': req.query.cacheremail }, function(err, cacher) {
-        if (err || cacher === undefined || cacher === null) {
+    // let query =  CacherModel.findOne({ 'email': req.query.cacheremail }, function(err, cacher) {
+    //     if (err || cacher === undefined || cacher === null) {
+    //         return res.json({ "status": 'Error'})
+    //     } else {
+    //         let query = ClusterModel.find({ _id: { $in: cacher.clusters.flatMap(cluster => new Map(cluster).get('id')) } })                    
+    //         query.exec((error, clusters) => {
+    //             if (error) {
+    //                 return res.json({ "status": 'Error'})
+    //             }
+    //             return res.json({ clusters: clusters, status: 'OK' })
+    //         })
+    //     }
+    // })
+
+    let query =  ProjectModel.findOne({ '_id': req.query.projectid }, function(err, project) {
+        if (err || project === undefined || project === null) {
             return res.json({ "status": 'Error'})
         } else {
-            let query = ClusterModel.find({ _id: { $in: cacher.clusters.flatMap(cluster => new Map(cluster).get('id')) } })                    
+            let query = ClusterModel.find({ _id: { $in: project.clusters.flatMap(cluster => new Map(cluster).get('id')) } })                    
             query.exec((error, clusters) => {
                 if (error) {
                     return res.json({ "status": 'Error'})
@@ -608,6 +654,120 @@ app.get('/api/collections/delete', async (req, res) => {
     return res.json({ status: 'OK' })
 })
 
+app.get('/api/projects/delete', async (req, res) => {
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+      
+    let query = ProjectModel.findOne({ _id: req.query.projectid })
+    query.exec(async (err, project) => {
+        if (err) {
+            return res.json({ 'status': 'false' })
+        } else {
+            
+            await project.clusters.map(async cluster => {
+                await ClusterModel.deleteMany({ _id: new Map(cluster).get('id')  })
+            })
+            
+            await ProjectModel.deleteMany({ _id: req.query.projectid  })
+            return res.json({ status: 'OK' })
+        }
+    })
+
+})
+
+app.get('/api/projects/create', (req, res) => {
+        
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    let query = ProjectModel.find({  })
+    query.exec((err, allProjects) => {
+        if (err) {
+            return res.json({ "status": "Error" })
+        }
+        
+        let projectExists = false
+
+        allProjects.forEach(project => {
+            if(project.name.includes(req.query.projectname)){
+                projectExists = true
+            }
+        })
+        if (projectExists) {
+            return res.json({ status: 'Error' })
+        } else {
+            let members = JSON.parse(req.query.projectmembers)
+
+            let project = new ProjectModel({ name: req.query.projectname, cacher: req.query.cacheremail, members: members })
+            project.save(function (err, project) {
+                if (err) {
+                    return res.json({ "status": "Error" })
+                } else {
+                    CacherModel.updateOne({ email: req.query.cacheremail },
+                        { $push: 
+                            {
+                                projects: [
+                                    {
+                                        id: project._id
+                                    }
+                                ]
+                                
+                            }
+                    }, (err, cacher) => {
+                        if(err){
+                            return res.json({ "status": "Error" })
+                        } else {
+                            
+                            return res.json({ "status": "OK" })
+
+                        }
+                    })
+
+                }
+            })
+        }
+    })
+
+})
+
+app.get('/api/projects/all', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    let query = ProjectModel.find({  })
+    query.exec((err, projects) => {
+        if (err) {
+            return res.json({ 'status': 'false' })
+        }
+        return res.json({ 'status': 'OK', 'projects': projects })
+    })
+
+})
+
+app.get('/api/projects/get', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    let query = ProjectModel.findOne({ name: req.query.projectname })
+    query.exec((err, project) => {
+        if (err) {
+            return res.json({ 'status': 'false' })
+        }
+        return res.json({ 'status': 'OK', 'project': project })
+    })
+
+})
 
 app.get('**', (req, res) => { 
 

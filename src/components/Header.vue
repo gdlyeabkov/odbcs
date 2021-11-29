@@ -2,7 +2,7 @@
     <div class="header">
         <div class="headerRow">
             <div class="headerItem">
-                <img src="https://assets-global.website-files.com/6064b31ff49a2d31e0493af1/610d75bbd917363ac7a1fec0_mongoDB.svg" alt="mongo db" width="75px" />
+                <img @click="$router.push({ name: 'Projects' })" src="https://assets-global.website-files.com/6064b31ff49a2d31e0493af1/610d75bbd917363ac7a1fec0_mongoDB.svg" alt="mongo db" width="75px" class="logo" />
                 <button class="btn btn-light organizationSelector">
                     <span class="material-icons">
                         apartment
@@ -211,7 +211,7 @@
                     
                 </span>
             </div>
-            <div class="contextMenuItem">
+            <div class="contextMenuItem" @click="logout">
                 <div class="contextMenuItemContent">
                     <span class="contextMenuItemContentHeader">
                         Logout
@@ -223,6 +223,9 @@
 </template>
 
 <script>
+
+import * as jwt from 'jsonwebtoken'
+
 export default {
     name: 'Header',
     props: {
@@ -240,6 +243,19 @@ export default {
     watch: {
         activeTab(tab) {
             this.activeHeaderTab = tab
+        }
+    },
+    methods: {
+        logout() {
+            
+            this.token = jwt.sign({
+              cacher: ''
+            }, 'odbcssecret', { expiresIn: 1 })
+            window.localStorage.setItem("odbcstoken", this.token)
+            setTimeout(() => {
+                this.$router.push({ 'name': "Auth" })
+            }, 1000)
+
         }
     }
 }
@@ -401,6 +417,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        cursor: pointer;
     }
 
     .contextMenuMainItem {
@@ -436,6 +453,10 @@ export default {
 
     .contextMenuItemContentDescription {
         color: rgb(0, 100, 255);
+    }
+
+    .logo {
+        cursor: pointer;
     }
 
 </style>

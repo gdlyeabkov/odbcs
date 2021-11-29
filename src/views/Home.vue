@@ -57,7 +57,7 @@
                     <span class="createProjectRowHeader">
                         Database Deployments
                     </span>
-                    <button @click="$router.push({ name: 'ClusterRegister' })" class="btn btn-success">
+                    <button @click="$router.push({ name: 'ClusterRegister', query: { 'projectname': project.name } })" class="btn btn-success">
                         Создать
                     </button>
                 </div>
@@ -696,6 +696,7 @@ export default {
             activeDatabaseAccessTab: 'Database Users',
             activeNetworkAccessTab: 'IP Access List',
             privateEndpointTab: 'dedicatedCluster',
+            project: {},
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -733,7 +734,7 @@ export default {
                     alert('Пользователя нашел')
                     this.cacher = JSON.parse(result).cacher
                     
-                    fetch(`http://localhost:4000/api/clusters/all/?cacheremail=${this.cacher.email}`, {
+                    fetch(`http://localhost:4000/api/projects/get/?projectname=${this.$route.query.projectname}`, {
                         mode: 'cors',
                         method: 'GET'
                     }).then(response => response.body).then(rb  => {
@@ -758,11 +759,42 @@ export default {
                     })
                     .then(result => {
                         if (JSON.parse(result).status === 'OK') {
-                            alert('Кластеры нашел')
-                            this.cacher = JSON.parse(result).cacher
-                            this.clusters = JSON.parse(result).clusters
+                            alert('Проект нашел')
+                            this.project = JSON.parse(result).project
+                            
+                            // fetch(`http://localhost:4000/api/clusters/all/?cacheremail=${this.cacher.email}`, {
+                            fetch(`http://localhost:4000/api/clusters/all/?projectid=${this.project._id}`, {
+                                mode: 'cors',
+                                method: 'GET'
+                            }).then(response => response.body).then(rb  => {
+                                const reader = rb.getReader()
+                                return new ReadableStream({
+                                    start(controller) {
+                                        function push() {
+                                            reader.read().then( ({done, value}) => {
+                                                if (done) {
+                                                    controller.close();
+                                                    return;
+                                                }
+                                                controller.enqueue(value)
+                                                push()
+                                            })
+                                        }
+                                        push()
+                                    }
+                                })
+                            }).then(stream => {
+                                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+                            })
+                            .then(result => {
+                                if (JSON.parse(result).status === 'OK') {
+                                    alert('Кластеры нашел')
+                                    this.clusters = JSON.parse(result).clusters
+                                }
+                            })      
+
                         }
-                    })      
+                    })
 
                 }
             })

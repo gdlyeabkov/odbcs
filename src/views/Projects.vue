@@ -44,93 +44,135 @@
                     <span class="createProjectRowHeader">
                         Projects
                     </span>
-                    <button class="btn btn-success">
+                    <button class="btn btn-success" @click="projectsTab = 'New Project'">
                         New project
                     </button>
                 </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти проекты..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
-                    </span>
+                <div v-if="projects.length >= 1">
+                    <div class="input-group w-25">
+                        <input v-model="keywords" type="text" placeholder="Найти проекты..." class="form-control w-25" />
+                        <span class="material-icons input-group-text">
+                            search
+                        </span>
+                    </div>
+                    <div class="projectsTable">
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                Project Name
+                            </span>
+                            <!-- <span class="projectTableCell link">
+                                Project Name
+                            </span>
+                            <span class="projectTableCell link">
+                                Project Name
+                            </span> -->
+                            <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link" @click="$router.push({ name: 'Home', query: { 'projectname': project.name } })">
+                                {{
+                                    project.name
+                                }}
+                            </span>
+                        </div>
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                Clusters
+                            </span>
+                            <!-- <span class="projectTableCell">
+                                1 Clusters
+                            </span>
+                            <span class="projectTableCell">
+                                1 Clusters
+                            </span> -->
+                            <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
+                                {{
+                                    `${project.clusters.length} Clusters`
+                                }}
+                            </span>
+                        </div>
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                Users
+                            </span>
+                            <!-- <span class="projectTableCell link">
+                                1 User
+                            </span>
+                            <span class="projectTableCell link">
+                                1 User
+                            </span> -->
+                            <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
+                                {{
+                                    '1 User'
+                                }}
+                            </span>
+                        </div>
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                Teams
+                            </span>
+                            <!-- <span class="projectTableCell link">
+                                0 Teams
+                            </span>
+                            <span class="projectTableCell link">
+                                0 Teams
+                            </span> -->
+                            <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
+                                {{
+                                    '0 Teams'
+                                }}
+                            </span>
+                        </div>
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                Alerts
+                            </span>
+                            <!-- <span class="projectTableCell link">
+                                0 Alerts
+                            </span>
+                            <span class="projectTableCell link">
+                                0 Alerts
+                            </span> -->
+                            <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
+                                {{
+                                    '0 Alerts'
+                                }}
+                            </span>
+                        </div>
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                Actions
+                            </span>
+                            <!-- <div class="projectTableCell actionsBtns">
+                                <span class="material-icons btn btn-light actionsBtn">
+                                    more_horiz
+                                </span>
+                                <span class="material-icons btn btn-light actionsBtn">
+                                    delete
+                                </span>
+                            </div>
+                            <div class="projectTableCell actionsBtns">
+                                <span class="material-icons btn btn-light actionsBtn">
+                                    more_horiz
+                                </span>
+                                <span class="material-icons btn btn-light actionsBtn">
+                                    delete
+                                </span>
+                            </div> -->
+                            <span v-for="project in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
+                                <div class="projectTableCell actionsBtns">
+                                    <span class="material-icons btn btn-light actionsBtn">
+                                        more_horiz
+                                    </span>
+                                    <span class="material-icons btn btn-light actionsBtn" @click="deleteProject(project)">
+                                        delete
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div class="projectsTable">
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Project Name
-                        </span>
-                        <span class="projectTableCell link">
-                            Project Name
-                        </span>
-                        <span class="projectTableCell link">
-                            Project Name
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Clusters
-                        </span>
-                        <span class="projectTableCell">
-                            1 Clusters
-                        </span>
-                        <span class="projectTableCell">
-                            1 Clusters
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Users
-                        </span>
-                        <span class="projectTableCell link">
-                            1 User
-                        </span>
-                        <span class="projectTableCell link">
-                            1 User
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Teams
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Teams
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Teams
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Alerts
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Alerts
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Alerts
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Actions
-                        </span>
-                        <div class="projectTableCell actionsBtns">
-                            <span class="material-icons btn btn-light actionsBtn">
-                                more_horiz
-                            </span>
-                            <span class="material-icons btn btn-light actionsBtn">
-                                delete
-                            </span>
-                        </div>
-                        <div class="projectTableCell actionsBtns">
-                            <span class="material-icons btn btn-light actionsBtn">
-                                more_horiz
-                            </span>
-                            <span class="material-icons btn btn-light actionsBtn">
-                                delete
-                            </span>
-                        </div>
-                    </div>
+                <div v-else>
+                    <span>
+                        Вы не создали еще ни 1 проект
+                    </span>
                 </div>
                 <div class="projectsFooter">
                     <span>
@@ -261,92 +303,239 @@
                     <span class="createProjectRowHeader">
                         Organization Activity Feed
                     </span>
-                    <button class="btn btn-success">
-                        New project
-                    </button>
-                </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти проекты..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
+                    <span>
+                        
                     </span>
+                </div>
+                <div class="clusterTabs">
+                    <span :class="{ clusterTab: true, activeActivityFeedTab: true }">
+                        &nbsp;&nbsp;&nbsp;&nbsp;All Activities&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+                </div>
+                <div class="createProjectRow">
+                    <div class="filters">
+                        <div class="input-group filter">
+                            <span class="material-icons input-group-text">
+                                list
+                            </span>
+                            <span>
+                                Filter by events
+                            </span>
+                            <span class="material-icons input-group-text">
+                                arrow_drop_down
+                            </span>
+                        </div>
+                        <div class="input-group filter">
+                            <span class="material-icons input-group-text">
+                                schedule
+                            </span>
+                            <span>
+                                Filter by time range
+                            </span>
+                            <span class="material-icons input-group-text">
+                                arrow_drop_down
+                            </span>
+                        </div>
+                        <button class="btn btn-light createDatabaseBtn material-icons">
+                            content_copy
+                        </button>
+                    </div>
+                    <button class="btn btn-light createDatabaseBtn">
+                        Clear Filters
+                    </button>
                 </div>
                 <div class="projectsTable">
                     <div class="projectsTableColumn">
                         <span class="projectsTableColumnHeader projectTableCell">
-                            Project Name
+                            Type
                         </span>
-                        <span class="projectTableCell link">
-                            Project Name
+                        <span class="projectTableCell material-icons">
+                            credit_card
                         </span>
-                        <span class="projectTableCell link">
-                            Project Name
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
+                        </span>
+                        <span class="projectTableCell material-icons">
+                            credit_card
                         </span>
                     </div>
                     <div class="projectsTableColumn">
                         <span class="projectsTableColumnHeader projectTableCell">
-                            Clusters
+                            Activity Description
                         </span>
                         <span class="projectTableCell">
-                            1 Clusters
+                            Invoice 61567917951b634e78ad8894 closed with $0.00 due
                         </span>
                         <span class="projectTableCell">
-                            1 Clusters
+                            Invoice 61567917951b634e78ad8894 closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Invoice 612fbce0a4629f76b1a2035f closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Invoice 60dd729b3dcb3537b93c397b closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Invoice 60b5d0388c8177155ad2807e closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Invoice 608cf1af7ac5ed290a1537e8 closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Invoice 6065d0e6c7ba4b60b69be398 closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Invoice 603c6c2db2b3e60087657895 closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Invoice 60178a0736304d6b0dfb2638 closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Invoice 601286ece82e5f44a9d635fd closed with $0.00 due
+                        </span>
+                        <span class="projectTableCell">
+                            Project unityGame was created
+                        </span>
+                        <span class="projectTableCell">
+                            Project Project 0 was created
+                        </span>
+                        <span class="projectTableCell">
+                            Organization Gleb's Org - 2021-01-28 created
                         </span>
                     </div>
                     <div class="projectsTableColumn">
                         <span class="projectsTableColumnHeader projectTableCell">
-                            Users
+                            Creation Info
                         </span>
                         <span class="projectTableCell link">
-                            1 User
+                            11/01/21 - 03:58:57 AM
                         </span>
                         <span class="projectTableCell link">
-                            1 User
+                            07/01/21 - 07:45:31 AM
+                        </span>
+                        <span class="projectTableCell link">
+                            08/01/21 - 06:11:58 AM
+                        </span>
+                        <span class="projectTableCell link">
+                            06/01/21 - 06:14:16 AM
+                        </span>
+                        <span class="projectTableCell link">
+                            05/01/21 - 06:14:07 AM
+                        </span>
+                        <span class="projectTableCell link">
+                            04/01/21 - 01:55:50 PM
+                        </span>
+                        <span class="projectTableCell link">
+                            03/01/21 - 04:23:09 AM
+                        </span>
+                        <span class="projectTableCell link">
+                            02/01/21 - 04:56:39 AM
+                        </span>
+                        <span class="projectTableCell link">
+                            01/30/21 - 02:27:53 PM by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM  by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM  by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM  by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM  by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM  by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM  by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM  by glebsilnei@mail.ru
+                        </span>
+                        <span class="projectTableCell link">
+                            01/28/21 - 09:42:04 AM  by glebsilnei@mail.ru
                         </span>
                     </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Teams
+                </div>
+                <div class="navigation">
+                    <div class="navigationItem">
+                        <span class="material-icons createDatabaseBtn navigationItemElement">
+                            chevron_left
                         </span>
-                        <span class="projectTableCell link">
-                            0 Teams
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Teams
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Alerts
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Alerts
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Alerts
+                        <span class="navigationItemElement">
+                            PREVIOUS
                         </span>
                     </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Actions
+                    <div class="navigationItem">
+                        <span class="navigationItemElement">
+                            NEXT
                         </span>
-                        <div class="projectTableCell actionsBtns">
-                            <span class="material-icons btn btn-light actionsBtn">
-                                more_horiz
-                            </span>
-                            <span class="material-icons btn btn-light actionsBtn">
-                                delete
-                            </span>
-                        </div>
-                        <div class="projectTableCell actionsBtns">
-                            <span class="material-icons btn btn-light actionsBtn">
-                                more_horiz
-                            </span>
-                            <span class="material-icons btn btn-light actionsBtn">
-                                delete
-                            </span>
-                        </div>
+                        <span class="material-icons createDatabaseBtn navigationItemElement">
+                            chevron_right
+                        </span>
                     </div>
                 </div>
                 <div class="projectsFooter">
@@ -366,92 +555,167 @@
                     <span class="createProjectRowHeader">
                         Organization Settings
                     </span>
-                    <button class="btn btn-success">
-                        New project
-                    </button>
-                </div>
-                <div class="input-group w-25">
-                    <input type="text" placeholder="Найти проекты..." class="form-control w-25" />
-                    <span class="material-icons input-group-text">
-                        search
+                    <span>
+
                     </span>
                 </div>
-                <div class="projectsTable">
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Project Name
+                <div class="settings">
+                    <div class="settingsItem">
+                        <span class="settingsItemHeader">
+                            Organization ID
                         </span>
-                        <span class="projectTableCell link">
-                            Project Name
-                        </span>
-                        <span class="projectTableCell link">
-                            Project Name
+                        <span>
+                            601286ece82e5f44a9d635fa
                         </span>
                     </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Clusters
+                    <div class="settingsItem">
+                        <span class="settingsItemHeader">
+                            Organization Name
                         </span>
-                        <span class="projectTableCell">
-                            1 Clusters
-                        </span>
-                        <span class="projectTableCell">
-                            1 Clusters
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Users
-                        </span>
-                        <span class="projectTableCell link">
-                            1 User
-                        </span>
-                        <span class="projectTableCell link">
-                            1 User
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Teams
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Teams
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Teams
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Alerts
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Alerts
-                        </span>
-                        <span class="projectTableCell link">
-                            0 Alerts
-                        </span>
-                    </div>
-                    <div class="projectsTableColumn">
-                        <span class="projectsTableColumnHeader projectTableCell">
-                            Actions
-                        </span>
-                        <div class="projectTableCell actionsBtns">
-                            <span class="material-icons btn btn-light actionsBtn">
-                                more_horiz
+                        <div class="settingsItemRow">
+                            <span class="settingsItemHeader">
+                                Gleb's Org - 2021-01-28
                             </span>
-                            <span class="material-icons btn btn-light actionsBtn">
-                                delete
+                            <span class="btn btn-light createDatabaseBtn material-icons editBtn" @click="isEditOrganizationName = !isEditOrganizationName">
+                                edit
                             </span>
                         </div>
-                        <div class="projectTableCell actionsBtns">
-                            <span class="material-icons btn btn-light actionsBtn">
-                                more_horiz
+                    </div>
+                    <div v-if="isEditOrganizationName" class="settingsItem">
+                        <div class="settingsItemColumn">
+                            <span class="settingsItemHeader">
+                                Edit Organization Name
                             </span>
-                            <span class="material-icons btn btn-light actionsBtn">
-                                delete
+                            <input v-model="organizationName" type="text" class="form-control w-50">
+                        </div>
+                        <div class="settingsItemRow">
+                            <button class="btn btn-light createDatabaseBtn">
+                                Cancel
+                            </button>
+                            <button class="btn btn-success">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settingsItem">
+                        <span class="settingsItemHeader">
+                            Created On
+                        </span>
+                        <span>
+                            01/28/21 - 09:42:04 AM
+                        </span>
+                    </div>
+                    <div class="settingsItem">
+                        <div class="settingsItemColumn">
+                            <span class="settingsItemHeader">
+                                Require Multi-Factor Authentication
+                            </span>
+                            <span>
+                                This will require users to set up MFA before accessing your organization.
                             </span>
                         </div>
+                        <div class="settingsItemRow">
+                            <div class="firstlyEnable">
+                                <span class="material-icons firstlyEnableIcon">
+                                    error
+                                </span>
+                                <span class="firstlyEnableLabel">
+                                    Enable your own MFA first
+                                </span>
+                            </div>
+                            <span class="settingItemChip material-icons">
+                                {{
+                                    requireMultiFactorAuthentication ?
+                                        'toggle_off'
+                                    :
+                                        'toggle_on'
+                                }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="settingsItem">
+                        <div class="settingsItemColumn">
+                            <span class="settingsItemHeader">
+                                Setup Federated Login
+                            </span>
+                            <span>
+                                Use the MongoDB Federation Management app to configure a federated experience for all users of your organization(s).
+                            </span>
+                            <span class="link">
+                                Visit Federation Management App
+                            </span>
+                        </div>
+                        <span>
+                            
+                        </span>
+                    </div>
+                    <div class="settingsItem">
+                        <div class="settingsItemColumn">
+                            <span class="settingsItemHeader">
+                                Require IP Access List for Public API
+                            </span>
+                            <span>
+                                This will force all Public API operations for your organization to originate from an IP Address added to your Access List by the API Key.
+                            </span>
+                            <span class="link">
+                                Docs
+                            </span>
+                        </div>
+                        <span class="settingItemChip material-icons">
+                            {{
+                                requireIPAccessListForPublicAPI ?
+                                    'toggle_off'
+                                :
+                                    'toggle_on'
+                            }}
+                        </span>
+                    </div>
+                    <div class="settingsItem">
+                        <div class="settingsItemColumn">
+                            <span class="settingsItemHeader">
+                                Restrict MongoDB Production Support Employee Access to Atlas Backend Infrastructure
+                            </span>
+                            <span>
+                                This will restrict MongoDB Production Support Employees from accessing Atlas backend infrastructure for any Atlas cluster in this organization. You may grant a 24 hour bypass to the access restriction at the Atlas cluster level.
+                            </span>
+                            <div>
+                                <span class="settingsItemFooter">
+                                    Note that restricting infrastructure access from MongoDB Production Support Employees may negatively impact cluster availability and increase support issue resolution time.
+                                </span>
+                                <span class="link">
+                                    Docs
+                                </span>
+                            </div>
+                        </div>
+                        <span class="settingItemChip material-icons">
+                            {{
+                                restrictProductionSupportEmployeeAccessToBackendInfrastructure ?
+                                    'toggle_off'
+                                :
+                                    'toggle_on'
+                            }}
+                        </span>
+                    </div>
+                    <div class="settingsItem">
+                        <div class="settingsItemColumn">
+                            <span class="settingsItemHeader">
+                                Slack Settings
+                            </span>
+                            <span>
+                                Authorize your Slack integration to allow you to configure alerts.
+                            </span>
+                        </div>
+                        <button class="btn btn-light createDatabaseBtn">
+                            Add to Slack
+                        </button>
+                    </div>
+                    <div class="settingsItem">
+                        <span class="settingsItemHeader">
+                            Delete Organization
+                        </span>
+                        <button class="btn btn-danger">
+                            Delete
+                        </button>
                     </div>
                 </div>
                 <div class="projectsFooter">
@@ -970,13 +1234,110 @@
                     </span>
                 </div>
             </div>
+            <div class="article" v-else-if="projectsTab === 'New Project'">
+                <span>
+                    GLEB'S ORG - 2021-01-28
+                </span>
+                <div class="createProjectRow">
+                    <span class="createProjectRowHeader">
+                        Create a Project
+                    </span>
+                    <span>
+                        
+                    </span>
+                </div>
+                <div class="createProjectRow">
+                    <div class="privateEndpointRowBtns">
+                        <button class="createProjectStep input group btn btn-light createDatabaseBtn">
+                            <span v-if="createProjectTab === 'second'" class="btn btn-light material-icons isCreateProjectStepComplete">
+                                check
+                            </span>
+                            <span>
+                                Name Your Project
+                            </span>
+                        </button>
+                        <button class="createProjectStep btn btn-light createDatabaseBtn"  @click="privateEndpointTab = 'dataLakeOnlineArchive'">
+                            Add Members
+                        </button>
+                    </div>
+                    <button v-if="createProjectTab === 'first'" :disabled="projectName.length <= 0" :class="{btn: true, 'btn-light': projectName.length <= 0, 'btn-success': projectName.length >= 1, createDatabaseBtn: true}"  @click="createProjectTab = 'second'">
+                        Next
+                    </button>
+                    <div v-else-if="createProjectTab === 'second'">
+                        <span class="link" @click="createProjectTab = 'first'">
+                            Go Back
+                        </span>
+                        <button :class="{btn: true, 'btn-success': true, createDatabaseBtn: true}"  @click="createProject">
+                            Create Project
+                        </button>
+                    </div>
+                </div>
+                <div v-if="createProjectTab === 'first'" class="createProjectContainer">
+                    <span>
+                        Name Your Project
+                    </span>
+                    <span>
+                        Project names have to be unique within the organization (and other restrictions).
+                    </span>
+                    <input placeholder="Project Name" v-model="projectName" type="text" class="form-control" />
+                    <div class="createProjectRow">
+                        <span></span>
+                        <div class="privateEndpointRowBtns">
+                            <button class="btn btn-light createDatabaseBtn" @click="projectsTab = 'Projects'; createProjectStep = 'first'">
+                                Cancel
+                            </button>
+                            <button :disabled="projectName.length <= 0" :class="{btn: true, 'btn-light': projectName.length <= 0, 'btn-success': projectName.length >= 1, createDatabaseBtn: true}"  @click="createProjectTab = 'second'">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="createProjectTab === 'second'" class="createProjectContainer">
+                    <span>
+                        Add Members and Set Permissions
+                    </span>
+                    <input @keyup.enter="addProjectMember" placeholder="Invite new or existing users via email address..." v-model="newProjectMember" type="text" class="form-control" />
+                    <span>
+                        Give your members access permissions below.
+                    </span>
+                    <hr />
+                    <div class="projectMember" v-for="projectMember in projectMembers" :key="projectMember">
+                        <span>
+                            {{
+                                projectMember.email
+                            }}
+                        </span>
+                        <select @change="debugProjectMembers" v-model="projectMember.role" class="form-select h-75 w-25">
+                            <option value="Project Owner">Project Owner</option>
+                        </select>    
+                    </div>
+                    <div class="createProjectRow">
+                        <span></span>
+                        <div class="privateEndpointRowBtns">
+                            <button class="btn btn-light createDatabaseBtn" @click="projectsTab = 'Projects'; createProjectStep = 'first'">
+                                Cancel
+                            </button>
+                            <button class="link btn btn-light createDatabaseBtn" @click="createProjectTab = 'first'">
+                                Go Back
+                            </button>
+                            <button :class="{btn: true, 'btn-success': true, createDatabaseBtn: true}"  @click="createProject">
+                                Create Project
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
         <Footer />
     </div>
 </template>
 
 <script>
+
 import Header from '@/components/Header.vue'
+
+import * as jwt from 'jsonwebtoken'
 
 export default {
     name: 'Projects',
@@ -986,6 +1347,188 @@ export default {
             activeAlertsTab: 'All Alerts',
             activeAccessManagerTab: 'Users',
             activeBillingTab: 'Overview',
+            requireMultiFactorAuthentication: false,
+            requireIPAccessListForPublicAPI: false,
+            restrictProductionSupportEmployeeAccessToBackendInfrastructure: false,
+            isEditOrganizationName: false,
+            organizationName: '',
+            isProjectCreateDialog: false,
+            projectName: '',
+            createProjectTab: 'first',
+            newProjectMember: '',
+            projects: [],
+            keywords: '',
+            projectMembers: [],
+            token: window.localStorage.getItem('odbcstoken')
+        }
+    },
+    mounted() {
+
+        jwt.verify(this.token, 'odbcssecret', (err, decoded) => {
+            if (err) {
+                return this.$router.push({ name: 'Auth' })
+            }
+            fetch(`http://localhost:4000/api/cachers/get/?cacheremail=${decoded.cacher}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Пользователя нашел')
+                    this.cacher = JSON.parse(result).cacher
+                    this.getProjects()
+                    this.projectMembers = [
+                        {
+                            email: `${this.cacher.email} (you)`,
+                            role: 'Project Owner'
+                        }
+                    ]
+                }
+            })
+
+        })
+
+    },
+    methods: {
+        debugProjectMembers() {
+            this.projectMembers.map(projectMember => {
+                alert(`Отладка: ${projectMember.email}; ${projectMember.role}`)
+            })
+        },
+        addProjectMember() {
+            // alert('Добавляю участника проекта')
+            this.projectMembers.push({
+                email: this.newProjectMember,
+                role: 'Project Owner'
+            })
+            this.newProjectMember = ''
+            // this.debugProjectMembers()
+        },
+        deleteProject(currentProject) {
+
+            fetch(`http://localhost:4000/api/projects/delete/?projectid=${currentProject._id}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Удалил проект')
+                    this.getProjects()
+                }
+            })
+
+        },
+        getProjects() {
+
+            fetch(`http://localhost:4000/api/projects/all/`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Проекты получил')
+                    this.projects = JSON.parse(result).projects
+                }
+            })
+        
+        },
+        createProject() {
+            console.log('создаю проект')
+            fetch(`http://localhost:4000/api/projects/create/?cacheremail=${this.cacher.email}&projectname=${this.projectName}&projectmembers=${JSON.stringify(this.projectMembers)}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Проект создал')
+                    this.getProjects()
+                    this.createProjectTab = 'first'
+                    this.projectsTab = 'Projects'
+                    this.projectName = ''
+                    this.projectMembers = [
+                        {
+                            email: `${this.cacher.email} (you)`,
+                            role: 'Project Owner'
+                        }
+                    ]
+                }
+            })
         }
     },
     components: {
@@ -1074,6 +1617,9 @@ export default {
         box-sizing: border-box;
         padding: 0px 10px;
         margin: 15px 0px;
+        height: 30px;
+        display: flex;
+        align-items: center;
     }
 
     .actionsBtn {
@@ -1151,7 +1697,7 @@ export default {
     }
 
     
-    .activeAlertsTab, .activeAccessManagerTab, .activeBillingTab {
+    .activeAlertsTab, .activeAccessManagerTab, .activeBillingTab, .activeActivityFeedTab {
         font-weight: bolder;
         text-decoration: underline;
         text-underline-offset: 5px;
@@ -1264,6 +1810,126 @@ export default {
         width: 48%;
         display: flex;
         flex-direction: column;
+    }
+
+    .filters {
+        display: flex;
+    }
+
+    .filter {
+        display: flex;
+        width: 245px;
+        align-items: center;
+        background-color: rgb(240, 240, 240);
+        height: 35px;
+    }
+
+    .navigation {
+        box-shadow: 0px 4px 2px rgb(235, 235, 235), 0px -4px 2px rgb(235, 235, 235);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .navigationItem {
+        display: flex;
+        align-items: center;
+    }
+
+    .navigationItemElement {
+        margin: 0px 5px;
+    }
+
+    .settings {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .settingsItem {
+        display: flex;
+        justify-content: space-between;
+        min-height: 50px;
+        border-bottom: 1px solid rgb(215, 215, 215);
+        align-items: center;
+    }
+
+    .settingsItemHeader {
+        font-size: 18px;
+    }
+
+    .settingsItemValue {
+        
+    }
+
+    .settingItemChip {
+        font-size: 48px;
+    }
+
+    .settingsItemColumn {
+        display: flex;
+        flex-direction: column;
+        width: 75%;
+    }
+
+    .settingsItemFooter {
+        font-weight: bolder;
+    }
+
+    .settingsItemRow {
+        display: flex;
+        align-items: center;
+    }
+
+    .firstlyEnable {
+        color: rgb(240, 0, 0);
+        margin: 0px 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .firstlyEnableIcon {
+        font-size: 18px;
+        margin: 0px 5px;
+    }
+
+    .firstlyEnableLabel {
+        font-size: 12px;
+        margin: 0px 5px;
+    }
+
+    .editBtn {
+        cursor: pointer;
+    }
+
+    .privateEndpointRowBtns {
+        display: flex;
+    }
+
+    .createProjectContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .projectMember {
+        justify-content: space-around;
+        display: flex;
+    }
+
+    .isCreateProjectStepComplete {
+        color: rgb(0, 150, 0);
+        height: 15px;
+        box-sizing: border-box;
+        padding-bottom: 15px;
+        align-self: flex-start;
+        align-items: flex-start;
+        justify-content: flex-start;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .createProjectStep {
+        margin: 0px 10px;
+        height: 35px;
+        display: flex;
     }
 
 </style>

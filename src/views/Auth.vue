@@ -123,8 +123,9 @@ export default {
                         }, 'odbcssecret', { expiresIn: '5m' })
                         localStorage.setItem('odbcstoken', this.token)
                         
-                        this.$router.push({ name: 'Home' })
+                        // this.$router.push({ name: 'Home' })
                         // this.$router.push({ name: 'Clusters' })
+                        this.$router.push({ name: 'Projects' })
                     }
                 })
 

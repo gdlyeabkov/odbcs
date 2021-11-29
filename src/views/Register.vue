@@ -45,13 +45,13 @@
                     Password
                 </label>
             </div>
-            <input placeholder="Пароль" v-model="password" type="phone" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Пароль" v-model="password" type="password" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     Phone Number
                 </label>
             </div>
-            <input placeholder="Номер телефона" v-model="phoneNumber" type="text" class="form-control w-75 authContainerFormItem" />
+            <input placeholder="Номер телефона" v-model="phoneNumber" type="phone" class="form-control w-75 authContainerFormItem" />
             <div class="emailAddressLabel authContainerFormItem">
                 <label for="" class="emailAddressLabelItem">
                     Company Name
@@ -136,6 +136,7 @@ export default {
             .then(result => {
                 if (JSON.parse(result).status === 'OK') {
                     alert('Создал пользователя')
+                    this.$router.push({ name: 'Projects' })
                 }
             })
 
