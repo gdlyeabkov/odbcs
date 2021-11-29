@@ -123,20 +123,36 @@
                         </div>
                     </div>
                 </div>
-                <div class="clusterRegisterInputBlock">
-                    <div class="clusterRegisterInputBlockItem">
-                        <span class="clusterRegisterInputBlockItemHeader">
-                            Cluster Name
-                        </span>
+                <div class="" @click="clusterNameSetter = !clusterNameSetter">
+                    <div class="clusterRegisterInputBlock">
+                        <div class="clusterRegisterInputBlockItem">
+                            <span class="clusterRegisterInputBlockItemHeader">
+                                Cluster Name
+                            </span>
+                        </div>
+                        <div class="clusterRegisterInputBlockItemRow">
+                            <span class="clusterRegisterInputBlockItemRowItem clusterRegisterInputBlockItemHeader">
+                                Cluster 1
+                            </span>
+                            <span class="clusterRegisterInputBlockItemIcon material-icons clusterRegisterInputBlockItemRowItem">
+                                expand_more
+                            </span>
+                        </div>
                     </div>
-                    <div class="clusterRegisterInputBlockItemRow">
-                        <span class="clusterRegisterInputBlockItemRowItem clusterRegisterInputBlockItemHeader">
-                            Cluster 1
-                        </span>
-                        <span class="clusterRegisterInputBlockItemIcon material-icons clusterRegisterInputBlockItemRowItem">
-                            expand_more
-                        </span>
+                    <div class="clusterRegisterInputBlock dropdownClusterMenu" v-if="clusterNameSetter">
+                        <div class="">
+                            <span class="clusterRegisterInputBlockItemHeader">
+                                One time only: once your cluster is created, you won't be able to change its name.
+                            </span>
+                        </div>
+                        <div class="clusterRegisterInputBlockItem">
+                            <input v-model="clusterName" type="text" class="form-control" />
+                            <span class="clusterRegisterInputBlockItemRowItem clusterRegisterInputBlockItemHeader">
+                                Cluster names can only contain ASCII letters, numbers, and hyphens.
+                            </span>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -182,6 +198,7 @@ export default {
             linkedRealmApp: 'None Linked',
             atlasSearch: 'Create Index',
             cacher: null,
+            clusterNameSetter: false,
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -359,6 +376,7 @@ export default {
         width: 75%;
         height: 200px;
         margin: 35px auto;
+        cursor: pointer;
     }
 
     .clusterRegisterInputBlockItem {
@@ -414,6 +432,10 @@ export default {
 
     .activeClusterType {
         border: 2px solid rgb(0, 200, 0);
+    }
+
+    .dropdownClusterMenu {
+        margin-top: -150px;
     }
 
 </style>

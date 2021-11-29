@@ -158,7 +158,7 @@
                             </div> -->
                             <span v-for="(project, projectIdx) in projects.filter(project => project.name.toLowerCase().includes(keywords.toLowerCase()))" :key="project._id" class="projectTableCell link">
                                 <div class="projectTableCell actionsBtns">
-                                    <span class="material-icons btn btn-light actionsBtn" @click="toggleProjectContextMenu(projectIdx)">
+                                    <span class="material-icons btn btn-light actionsBtn" @click="currentProject = project; toggleProjectContextMenu(projectIdx)">
                                         more_horiz
                                     </span>
                                     <span class="material-icons btn btn-light actionsBtn" @click="deleteProject(project)">
@@ -1339,7 +1339,7 @@
             <span class="projectContextMenuItem">
                 Move Project
             </span>
-            <span class="projectContextMenuItem">
+            <span class="projectContextMenuItem" @click="isProjectRenameDialog = true">
                 Edit Project
             </span>
             <span class="projectContextMenuItem">
@@ -1354,7 +1354,27 @@
         </div>
         <div v-if="isProjectRenameDialog" class="dialogBackdrop">
             <div class="dialog">
-
+                <div class="closeRow">
+                    <span class="material-icons closeBtn" @click="isProjectRenameDialog = false">
+                        close
+                    </span>
+                </div>
+                <span>
+                    Rename Project
+                </span>
+                <hr />
+                <span>
+                    Change the name of the project vueVideos below.
+                </span>
+                <input v-model="projectNewName" type="text" class="form-control" />
+                <div class="createCollectionDialogItem createCollectionDialogItemBtns">
+                    <button class="btn btn-light createCollectionDialogItemBtn" @click="isProjectRenameDialog = false">
+                        Отмена
+                    </button>
+                    <button class="btn btn-success createCollectionDialogItemBtn" @click="renameProject">
+                        Переименовать Проект
+                    </button>
+                </div>
             </div>
         </div>
         <Footer />
@@ -1390,6 +1410,8 @@ export default {
             cacher: {},
             isProjectContextMenu: false,
             isProjectRenameDialog: false,
+            projectNewName: '',
+            currentProject: null, 
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -1443,9 +1465,9 @@ export default {
 
     },
     methods: {
-        setRestrictProductionSupportEmployeeAccessToBackendInfrastructure() {
+        renameProject() {
 
-            fetch(`http://localhost:4000/api/cachers/restrictproductionsupportemployeeaccesstobackendinfrastructure/set/?cacheremail=${this.cacher.email}&value=${!this.restrictProductionSupportEmployeeAccessToBackendInfrastructure}`, {
+            fetch(`http://localhost:4000/api/projects/rename/?projectid=${this.currentProject._id}&projectname=${this.projectNewName}`, {
                 mode: 'cors',
                 method: 'GET'
             }).then(response => response.body).then(rb  => {
@@ -1470,7 +1492,10 @@ export default {
             })
             .then(result => {
                 if (JSON.parse(result).status === 'OK') {
-                    this.isProjectRenameDialog = true
+                    this.isProjectRenameDialog = false
+                    this.projectNewName = ''
+                    this.currentProject = null
+                    this.getProjects()
                 }
             })
 
@@ -2174,6 +2199,7 @@ export default {
 
     .projectContextMenuItem {
         margin: 5px 0px;
+        cursor: pointer;
     }
 
     .dialogBackdrop {
@@ -2183,15 +2209,56 @@ export default {
         background-color: rgba(0, 0, 0, 0.6);
         width: 100%;
         height: 100%;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .dialog {
+        z-index: 15;
         width: 50%;
         height: 50%;
         background-color: rgb(255, 255, 255);
         border-radius: 15px;
         box-sizing: border-box;
         padding: 35px;
+    }
+
+    .createCollectionDialogItem {
+        margin: 5px 0px;
+    }
+
+    .createCollectionDialogContainer {
+        display: flex;
+        align-items: center;
+    }
+
+    .createCollectionDialogContainerItem {
+        margin: 0px 10px;
+    }
+
+    .createCollectionDialogItemBtns {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .createCollectionDialogItemBtn {
+        margin: 0px 5px;
+        border: 1px solid rgb(200, 200, 200);
+    }
+
+    .createCollectionDialogLabel {
+        font-weight: bolder;
+    }
+
+    .closeBtn {
+        cursor: pointer;
+    }
+
+    .closeRow {
+        display: flex;
+        justify-content: flex-end;
     }
 
 </style>
