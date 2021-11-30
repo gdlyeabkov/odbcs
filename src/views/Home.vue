@@ -58,7 +58,7 @@
                         Database Deployments
                     </span>
                     <button @click="$router.push({ name: 'ClusterRegister', query: { 'projectname': project.name } })" class="btn btn-success">
-                        Создать
+                        + Создать
                     </button>
                 </div>
                 <div class="input-group w-25">

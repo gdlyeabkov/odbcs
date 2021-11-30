@@ -90,7 +90,9 @@ const ClusterSchema = new mongoose.Schema({
         default: false
     },
     databases: [mongoose.Schema.Types.Map],
-    project: String
+    project: String,
+    enableGlobalWrites: Boolean,
+    workloadIsolation: Boolean
 }, { collection : 'myclusters' })
 
 const ClusterModel = mongoose.model('ClusterModel', ClusterSchema)
@@ -481,7 +483,7 @@ app.get('/api/clusters/create', (req, res) => {
         if (clusterExists) {
             return res.json({ status: 'Error' })
         } else {
-            const cluster = new ClusterModel({ name: req.query.clustername, free: req.query.free, shared: req.query.shared, version: req.query.version, region: req.query.region, clusterTier: req.query.clustertier, type: req.query.type, backups: req.query.backups, linkedRealmApp: req.query.linkedrealmapp, atlasSearch: req.query.atlassearch, project: req.query.projectname  })
+            const cluster = new ClusterModel({ name: req.query.clustername, free: req.query.free, shared: req.query.shared, version: req.query.version, region: req.query.region, clusterTier: req.query.clustertier, type: req.query.type, backups: req.query.backups, linkedRealmApp: req.query.linkedrealmapp, atlasSearch: req.query.atlassearch, project: req.query.projectname, enableGlobalWrites: req.query.enableglobalwrites, workloadIsolation: req.query.workisolation })
             cluster.save(function (err, cluster) {
                 if (err) {
                     return res.json({ "status": "Error" })
