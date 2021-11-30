@@ -51,7 +51,7 @@
             </div>
             <div class="article">
                 <span>
-                    GLEB'S ORG - 2021-01-28 > UNITYGAME
+                    {{ companyName }} > {{ project.name }}
                 </span>
                 <div class="createProjectRow">
                     <span class="createProjectRowHeader">
@@ -1201,7 +1201,9 @@ export default {
                 name: '',
                 documents: []
             },
-            cacher: null,
+            cacher: {
+                companyName: 'Неизвестно'
+            },
             cluster: null,
             databases: [],
             collections: [],
@@ -1219,6 +1221,10 @@ export default {
             namespaces: '',
             activeCollectionTab: 'Find',
             activeHeaderTab: 'Atlas',
+            project: {
+                name: 'Неизвестно'
+            },
+            companyName: 'Неизвестно',
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -1255,8 +1261,9 @@ export default {
                 if (JSON.parse(result).status === 'OK') {
                     alert('Пользователя нашел')
                     this.cacher = JSON.parse(result).cacher
-                    
-                    fetch(`http://localhost:4000/api/clusters/get/?clusterid=${this.$route.query.clusterid}`, {
+                    this.companyName = this.cacher.companyName
+
+                    fetch(`http://localhost:4000/api/projects/get/?projectname=${this.$route.query.projectname}`, {
                         mode: 'cors',
                         method: 'GET'
                     }).then(response => response.body).then(rb  => {
@@ -1281,13 +1288,46 @@ export default {
                     })
                     .then(result => {
                         if (JSON.parse(result).status === 'OK') {
-                            alert('Кластер нашел')
-                            this.cacher = JSON.parse(result).cacher
-                            this.cluster = JSON.parse(result).cluster
-                            this.getDatabases()
-                        }
-                    })      
+                            alert('Проект получил')
+                            this.project = JSON.parse(result).project
 
+                            fetch(`http://localhost:4000/api/clusters/get/?clusterid=${this.$route.query.clusterid}`, {
+                                mode: 'cors',
+                                method: 'GET'
+                            }).then(response => response.body).then(rb  => {
+                                const reader = rb.getReader()
+                                return new ReadableStream({
+                                    start(controller) {
+                                        function push() {
+                                            reader.read().then( ({done, value}) => {
+                                                if (done) {
+                                                    controller.close();
+                                                    return;
+                                                }
+                                                controller.enqueue(value)
+                                                push()
+                                            })
+                                        }
+                                        push()
+                                    }
+                                })
+                            }).then(stream => {
+                                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+                            })
+                            .then(result => {
+                                if (JSON.parse(result).status === 'OK') {
+                                    alert('Кластер нашел')
+                                    this.cacher = JSON.parse(result).cacher
+                                    this.cluster = JSON.parse(result).cluster
+                                    this.getDatabases()
+                                }
+                            })      
+
+
+                        }
+                    })
+
+                    
                 }
             })
             

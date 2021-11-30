@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Header />
+        <Header :showProjectPreview="true" :previewProject="project" />
         <div class="main">
             <div class="aside">
                 <div class="asideItemHeader">
@@ -51,7 +51,7 @@
             </div>
             <div class="article" v-if="activeAsideTab === 'Databases'">
                 <span>
-                    GLEB'S ORG - 2021-01-28 > UNITYGAME
+                    {{ cacher.companyName }} > {{ project.name }}
                 </span>
                 <div class="createProjectRow">
                     <span class="createProjectRowHeader">
@@ -85,7 +85,7 @@
                                 <button class="btn btn-primary clusterInfoHeaderItemElement">
                                     View Monitoring
                                 </button>
-                                <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster', query: { clusterid: cluster._id } })">
+                                <button class="btn btn-primary clusterInfoHeaderItemElement" @click="$router.push({ name: 'Cluster', query: { clusterid: cluster._id, projectname: project.name } })">
                                     Browse Collections
                                 </button>
                                 <button class="material-icons btn btn-primary clusterInfoHeaderItemElement">

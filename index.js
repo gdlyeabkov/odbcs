@@ -121,6 +121,38 @@ const DocumentModel = mongoose.model('DocumentModel', DocumentSchema)
 const ProjectSchema = new mongoose.Schema({
     name: String,
     cacher: String,
+    multipleRegionalizedPrivateEndpoints: {
+        type: Boolean,
+        default: false
+    },
+    collectDatabaseSpecificStatistics: {
+        type: Boolean,
+        default: true
+    },
+    preferredClusterMaintenanceStartTime: {
+        type: Boolean,
+        default: false
+    },
+    securityQuickstart: {
+        type: Boolean,
+        default: false
+    },
+    realTimePerformancePanel: {
+        type: Boolean,
+        default: true
+    },
+    performanceAdvisorAndProfiler: {
+        type: Boolean,
+        default: true
+    },
+    dataExplorer: {
+        type: Boolean,
+        default: true
+    },
+    schemaAdvisor: {
+        type: Boolean,
+        default: true
+    },
     clusters: [mongoose.Schema.Types.Map],
     members: [mongoose.Schema.Types.Map]
 }, { collection : 'myprojects' })
@@ -869,6 +901,150 @@ app.get('/api/projects/rename', (req, res) => {
     }, (err, cacher) => {
         if (err) {
             return res.json({ status: 'Error' })
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/project/multipleregionalizedprivateendpoints/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        multipleRegionalizedPrivateEndpoints: req.query.value
+    }, (err, project) => {
+        if (err) {
+            return res.json({ status: 'Error' })
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/project/collectdatabasespecificstatistics/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        collectDatabaseSpecificStatistics: req.query.value
+    }, (err, project) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/project/preferredclustermaintenancestarttime/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        preferredClusterMaintenanceStartTime: req.query.value
+    }, (err, project) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/project/securityquickstart/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        securityQuickstart: req.query.value
+    }, (err, project) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/project/realtimeperformancepanel/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        realTimePerformancePanel: req.query.value
+    }, (err, project) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/project/dataexplorer/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        dataExplorer: req.query.value
+    }, (err, project) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/project/performanceadvisorandprofiler/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        performanceAdvisorAndProfiler: req.query.value
+    }, (err, project) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
+        }
+        return res.json({ status: 'OK' })
+    })
+})
+
+app.get('/api/project/schemaadvisor/set', (req, res) => {
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Access-Token, X-Socket-ID, Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    
+    ProjectModel.updateOne({ _id: req.query.projectid },
+    {
+        schemaAdvisor: req.query.value
+    }, (err, project) => {
+        if (err) {
+            return res.json({ status: 'Error' })        
         }
         return res.json({ status: 'OK' })
     })

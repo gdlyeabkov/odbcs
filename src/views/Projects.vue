@@ -777,79 +777,78 @@
                     <div class="projectsTable">
                         <div class="projectsTableColumn">
                             <span class="projectsTableColumnHeader projectTableCell">
-                                Project Name
-                            </span>
-                            <span class="projectTableCell link">
-                                Project Name
-                            </span>
-                            <span class="projectTableCell link">
-                                Project Name
-                            </span>
-                        </div>
-                        <div class="projectsTableColumn">
-                            <span class="projectsTableColumnHeader projectTableCell">
-                                Clusters
+                                Display Name
                             </span>
                             <span class="projectTableCell">
-                                1 Clusters
+                                {{
+                                    `${cacher.firstName} ${cacher.lastName}`
+                                }}
+                            </span>
+                        </div>
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                Email/Username
                             </span>
                             <span class="projectTableCell">
-                                1 Clusters
+                                {{
+                                    `${cacher.email}`
+                                }}
                             </span>
                         </div>
                         <div class="projectsTableColumn">
                             <span class="projectsTableColumnHeader projectTableCell">
-                                Users
+                                Organization role
                             </span>
-                            <span class="projectTableCell link">
-                                1 User
-                            </span>
-                            <span class="projectTableCell link">
-                                1 User
-                            </span>
-                        </div>
-                        <div class="projectsTableColumn">
-                            <span class="projectsTableColumnHeader projectTableCell">
-                                Teams
-                            </span>
-                            <span class="projectTableCell link">
-                                0 Teams
-                            </span>
-                            <span class="projectTableCell link">
-                                0 Teams
+                            <span class="projectTableCell">
+                                {{
+                                    `Organization role`
+                                }}
                             </span>
                         </div>
                         <div class="projectsTableColumn">
                             <span class="projectsTableColumnHeader projectTableCell">
-                                Alerts
+                                Projects
                             </span>
-                            <span class="projectTableCell link">
-                                0 Alerts
-                            </span>
-                            <span class="projectTableCell link">
-                                0 Alerts
+                            <span class="projectTableCell">
+                                {{
+                                    `${projects.length}`
+                                }}
                             </span>
                         </div>
                         <div class="projectsTableColumn">
                             <span class="projectsTableColumnHeader projectTableCell">
-                                Actions
+                                Last Login Date
                             </span>
-                            <div class="projectTableCell actionsBtns">
-                                <span class="material-icons btn btn-light actionsBtn">
-                                    more_horiz
-                                </span>
-                                <span class="material-icons btn btn-light actionsBtn">
-                                    delete
-                                </span>
-                            </div>
-                            <div class="projectTableCell actionsBtns">
-                                <span class="material-icons btn btn-light actionsBtn">
-                                    more_horiz
-                                </span>
-                                <span class="material-icons btn btn-light actionsBtn">
-                                    delete
-                                </span>
-                            </div>
+                            <span class="projectTableCell">
+                                {{
+                                    '11/30/21 - 05:24 AM'
+                                }}
+                            </span>
+                        </div>
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                Email Last Verified Date
+                            </span>
+                            <span class="projectTableCell">
+                                {{
+                                    'Email has not been verified'
+                                }}
+                            </span>
+                        </div>
+                        <div class="projectsTableColumn">
+                            <span class="projectsTableColumnHeader projectTableCell">
+                                
+                            </span>
+                            <span class="projectTableCell link">
+                                <div class="projectTableCell actionsBtns">
+                                    <span class="material-icons btn btn-light actionsBtn">
+                                        edit
+                                    </span>
+                                    <span class="material-icons btn btn-light actionsBtn">
+                                        delete
+                                    </span>
+                                </div>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -1345,7 +1344,7 @@
             <span class="projectContextMenuItem" @click="copyProjectId">
                 Copy Project ID
             </span>
-            <span class="projectContextMenuItem" @click="currentProject = null; projectsTab = 'Settings'">
+            <span class="projectContextMenuItem" @click="$router.push({ name: 'Project', query: { projectname: currentProject.name } }); currentProject = null">
                 Visit Project Settings
             </span>
             <span class="projectContextMenuItem">
@@ -1377,7 +1376,7 @@
                 </div>
             </div>
         </div>
-        <input class="hiddenProjectID" type="text" ref="currentProjectId" />
+        <input readonly class="hiddenProjectID" type="text" ref="currentProjectId" />
         <Footer />
     </div>
 </template>
@@ -1513,21 +1512,21 @@ export default {
         toggleProjectContextMenu(delta) {
             alert(`delta: ${delta}`)
             this.isProjectContextMenu = !this.isProjectContextMenu
-            this.$refs.projectContextMenu.style = `
-                display: flex;
-                flex-direction: column;
-                width: 200px;
-                height: 195px;
-                background-color: rgb(255, 255, 255);
-                border-radius: 8px;
-                box-shadow: 0px 0px 10px rgb(150, 150, 150);
-                position: absolute;
-                top: ${410 + 50 * delta}px;
-                left: 1015px;
-                z-index: 5;
-                box-sizing: border-box;
-                padding: 15px;
-            `
+            // this.$refs.projectContextMenu.style = `
+            //     display: flex;
+            //     flex-direction: column;
+            //     width: 200px;
+            //     height: 195px;
+            //     background-color: rgb(255, 255, 255);
+            //     border-radius: 8px;
+            //     box-shadow: 0px 0px 10px rgb(150, 150, 150);
+            //     position: absolute;
+            //     top: ${410 + 50 * delta}px;
+            //     left: 1015px;
+            //     z-index: 5;
+            //     box-sizing: border-box;
+            //     padding: 15px;
+            // `
 
         },
         setRestrictProductionSupportEmployeeAccessToBackendInfrastructure() {
@@ -2120,6 +2119,7 @@ export default {
 
     .settingItemChip {
         font-size: 48px;
+        cursor: pointer;
     }
 
     .settingsItemColumn {
@@ -2278,7 +2278,9 @@ export default {
 
     .hiddenProjectID {
         border: none;
-        outline: none
+        outline: none;
+        background-color: transparent;
+        cursor: default;
     }
 
 </style>

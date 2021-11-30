@@ -8,7 +8,9 @@
                         apartment
                     </span>
                     <span>
-                        Gleb's Org
+                        {{
+                            cacher.companyName
+                        }}
                     </span>
                 </button>
                 <span class="settingsShortcut material-icons btn btn-light">
@@ -35,7 +37,9 @@
                 </span>
                 <button class="personalArea btn btn-light" @click="isContextMenu = !isContextMenu">
                     <span>
-                        Gleb
+                        {{
+                            `${cacher.firstName}`
+                        }}
                     </span>
                     <span class="material-icons">
                         arrow_drop_down
@@ -43,14 +47,16 @@
                 </button>
             </div>
         </div>
-        <div class="headerRow">
+        <div class="headerRow" v-if="showProjectPreview">
             <div class="headerTabs">
                 <div class="input-group">
                     <span class="material-icons input-group-text">
                         folder
                     </span>
                     <span class="btn btn-secondary">
-                        vue_videos
+                        {{
+                            previewProject.name
+                        }}
                     </span>
                     <span class="material-icons input-group-text">
                         arrow_drop_down
@@ -232,18 +238,73 @@ export default {
         activeTab: {
             type: String,
             default: 'Atlas'
+        },
+        showProjectPreview: {
+            type: Boolean,
+            default: false
+        },
+        previewProject: {
+            type: Object,
+            default: {
+                name: ''
+            }
         }
     },
     data() {
         return {
             activeHeaderTab: 'Atlas',
-            isContextMenu: false
+            isContextMenu: false,
+            cacher: {
+                firstName: 'Неизвестно',
+                lastName: 'Неизвестно',
+                companyName: 'Неизвестно'
+            },
+            token: window.localStorage.getItem('odbcstoken')
         }
     },
     watch: {
         activeTab(tab) {
             this.activeHeaderTab = tab
         }
+    },
+    mounted() {
+        
+        jwt.verify(this.token, 'odbcssecret', (err, decoded) => {
+            if (err) {
+                return this.$router.push({ name: 'Auth' })
+            }
+            fetch(`http://localhost:4000/api/cachers/get/?cacheremail=${decoded.cacher}`, {
+                mode: 'cors',
+                method: 'GET'
+            }).then(response => response.body).then(rb  => {
+                const reader = rb.getReader()
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then( ({done, value}) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                controller.enqueue(value)
+                                push()
+                            })
+                        }
+                        push()
+                    }
+                })
+            }).then(stream => {
+                return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+            })
+            .then(result => {
+                if (JSON.parse(result).status === 'OK') {
+                    alert('Пользователя нашел')
+                    this.cacher = JSON.parse(result).cacher
+                }
+            })
+            
+        })
+
     },
     methods: {
         logout() {

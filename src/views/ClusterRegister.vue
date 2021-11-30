@@ -123,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="" @click="clusterNameSetter = !clusterNameSetter">
+                <div class="" @click="toggleClusterNameSetter($event)">
                     <div class="clusterRegisterInputBlock">
                         <div class="clusterRegisterInputBlockItem">
                             <span class="clusterRegisterInputBlockItemHeader">
@@ -141,12 +141,12 @@
                     </div>
                     <div class="clusterRegisterInputBlock dropdownClusterMenu" v-if="clusterNameSetter">
                         <div class="">
-                            <span class="clusterRegisterInputBlockItemHeader">
+                            <span class="clusterRegisterInputBlockItemHeader ">
                                 One time only: once your cluster is created, you won't be able to change its name.
                             </span>
                         </div>
                         <div class="clusterRegisterInputBlockItem">
-                            <input v-model="clusterName" type="text" class="form-control" />
+                            <input id="setterId" v-model="clusterName" type="text" class="form-control" />
                             <span class="clusterRegisterInputBlockItemRowItem clusterRegisterInputBlockItemHeader">
                                 Cluster names can only contain ASCII letters, numbers, and hyphens.
                             </span>
@@ -243,6 +243,11 @@ export default {
 
     },
     methods: {
+        toggleClusterNameSetter(event) {
+            if (event.target.id !== 'setterId') {
+                this.clusterNameSetter = !this.clusterNameSetter
+            }
+        },
         createCluster() {
             
             console.log(`создал кластер`)
@@ -436,6 +441,8 @@ export default {
 
     .dropdownClusterMenu {
         margin-top: -150px;
+        box-shadow: 0px 0px 0px transparent;
+        background-color: rgb(255, 255, 255);
     }
 
 </style>
