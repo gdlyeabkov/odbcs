@@ -56,7 +56,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="" @click="toggleGlobalClusterConfigurationSetter($event)">
+                <div class="totalContainerItem" :style="`${globalClusterConfigurationSetter ? 'height: 400px;' : ''}`" @click="toggleGlobalClusterConfigurationSetter($event)">
                     <div class="clusterRegisterInputBlock">
                         <div class="clusterRegisterInputBlockItem">
                             <span class="clusterRegisterInputBlockItemHeader">
@@ -81,7 +81,7 @@
                         <div class="clusterRegisterInputBlockItem">
                             <span id="setterId" class="settingItemChip material-icons" @click="enableGlobalWrites = !enableGlobalWrites">
                                 {{
-                                    enableGlobalWrites ?
+                                    !enableGlobalWrites ?
                                         'toggle_off'
                                     :
                                         'toggle_on'
@@ -128,7 +128,7 @@
                         <div class="clusterRegisterInputBlockItem">
                             <span id="setterId" class="settingItemChip material-icons" @click="workloadIsolation = !workloadIsolation">
                                 {{
-                                    workloadIsolation ?
+                                    !workloadIsolation ?
                                         'toggle_off'
                                     :
                                         'toggle_on'
@@ -597,7 +597,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="" @click="toggleClusterTierSetter($event)">
+                <div class="totalContainerItem" :style="`${clusterTierSetter ? 'height: 1200px;' : ''}`" @click="toggleClusterTierSetter($event)">
                     <div class="clusterRegisterInputBlock">
                         <div class="clusterRegisterInputBlockItem">
                             <span class="clusterRegisterInputBlockItemHeader">
@@ -843,7 +843,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="" @click="toggleAdditionalSettingsSetter($event)">
+                <div class="totalContainerItem" :style="`${additionalSettingsSetter ? 'height: 400px;' : ''}`" @click="toggleAdditionalSettingsSetter($event)">
                     <div class="clusterRegisterInputBlock">
                         <div class="clusterRegisterInputBlockItem">
                             <span class="clusterRegisterInputBlockItemHeader">
@@ -852,7 +852,9 @@
                         </div>
                         <div class="clusterRegisterInputBlockItem">
                             <span class="clusterRegisterInputBlockItemHeader">
-                                MongoDB 4.4, Backup
+                                {{
+                                    versionLabels[version]
+                                }}
                             </span>
                             <div class="clusterRegisterInputBlockItemRow">
                                 <span class="clusterRegisterInputBlockItemRowItem">
@@ -874,7 +876,7 @@
                             </span>
                         </div>
                         <div class="clusterRegisterInputBlockItem">
-                            <select if="setterId" v-model="version" class="form-select h-50">
+                            <select id="setterId" v-model="version" class="form-select h-50">
                                 <option value="4.0">MongoDB 4.0</option>
                                 <option value="4.2">MongoDB 4.2</option>
                                 <option value="4.4">MongoDB 4.4</option>
@@ -884,7 +886,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="" @click="toggleClusterNameSetter($event)">
+                <div class="totalContainerItem" :style="`${clusterNameSetter ? 'height: 400px;' : ''}`" @click="toggleClusterNameSetter($event)">
                     <div class="clusterRegisterInputBlock">
                         <div class="clusterRegisterInputBlockItem">
                             <span class="clusterRegisterInputBlockItemHeader">
@@ -893,7 +895,7 @@
                         </div>
                         <div class="clusterRegisterInputBlockItemRow">
                             <span class="clusterRegisterInputBlockItemRowItem clusterRegisterInputBlockItemHeader">
-                                Cluster 1
+                                {{ clusterName }}
                             </span>
                             <span class="clusterRegisterInputBlockItemIcon material-icons clusterRegisterInputBlockItemRowItem">
                                 expand_more
@@ -967,6 +969,13 @@ export default {
             enableGlobalWrites: false,
             workloadIsolation: false,
             activeCity: 'Las Vegas (us-west4)',
+            versionLabels: {
+                '4.0': 'MongoDB 4.0',
+                '4.2': 'MongoDB 4.2',
+                '4.4': 'MongoDB 4.4',
+                '5.0': 'MongoDB 5.0',
+                'auto-upgrades': 'Latest Release (auto-upgrades)',
+            },
             token: window.localStorage.getItem('odbcstoken')
         }
     },
@@ -1039,7 +1048,7 @@ export default {
         createCluster() {
             
             console.log(`создал кластер`)
-            fetch(`http://localhost:4000/api/clusters/create/?clustername=${this.clusterName}&free=${this.free}&shared=${this.shared}&version=${this.version}&region=${this.region}&clustertier=${this.clusterTier}&type=${this.type}&backups=${this.backups}&linkedrealmapp=${this.linkedRealmApp}&atlassearch=${this.atlasSearch}&cacheremail=${this.cacher.email}&projectname=${this.projectName}&enableglobalwrites=${this.enableGlobalWrites}&workloadisolation=${this.workloadIsolation}`, {
+            fetch(`http://localhost:4000/api/clusters/create/?clustername=${this.clusterName}&free=${this.free}&shared=${this.shared}&version=${this.version}&region=${this.region}&clustertier=${this.clusterTier}&type=${this.type}&backups=${this.backups}&linkedrealmapp=${this.linkedRealmApp}&atlassearch=${this.atlasSearch}&cacheremail=${this.cacher.email}&projectname=${this.projectName}&enableglobalwrites=${this.enableGlobalWrites}&workloadisolation=${this.workloadIsolation}&datacenter=${this.activeCity}`, {
                 mode: 'cors',
                 method: 'GET'
             }).then(response => response.body).then(rb  => {
@@ -1066,7 +1075,7 @@ export default {
                 if (JSON.parse(result).status === 'OK') {
                     alert('кластер создан')
                     let cluster = JSON.parse(result).cluster
-                    this.$router.push({ name: 'Cluster', query: { 'clusterid': cluster._id } })
+                    this.$router.push({ name: 'Cluster', query: { 'clusterid': cluster._id, 'projectname': this.projectName } })
                 }
             })
 
@@ -1182,7 +1191,7 @@ export default {
         justify-content: space-between;
         box-sizing: border-box;
         padding: 45px 35px;
-        box-shadow: 0px 0px 15px rgb(215, 215, 215);
+        /* box-shadow: 0px 0px 15px rgb(215, 215, 215); */
         width: 75%;
         height: 200px;
         margin: 35px auto;
@@ -1268,6 +1277,7 @@ export default {
     .settingItemChip {
         font-size: 48px;
         cursor: pointer;
+        user-select: none;
     }
 
     .setterColumn {

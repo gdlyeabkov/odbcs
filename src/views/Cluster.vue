@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Header :activeTab="activeHeaderTab" />
+        <Header :activeTab="activeHeaderTab" :showProjectPreview="true" :previewProject="project" />
         <div class="main">
             <div class="aside">
                 <div class="asideItemHeader">
